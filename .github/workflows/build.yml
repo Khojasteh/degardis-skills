@@ -1,0 +1,26 @@
+name: Validate
+
+"on":
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v7
+    - uses: actions/setup-python@v7
+      with:
+        python-version: "3.14"
+    - name: Install Degardis
+      run: python -m pip install degardis
+    - name: Check generated README content
+      run: python .github/scripts/generate-readmes.py --check
+    - name: Validate skill sources
+      run: degardis validate skills
+    - name: Build all skill profiles
+      run: degardis build skills --profile all --zip --output .artifacts

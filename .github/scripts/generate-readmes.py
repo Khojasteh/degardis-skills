@@ -1,4 +1,4 @@
-"""Generate skill READMEs and the dynamic sections of the root README."""
+"""Generate skill READMEs and the catalog table in the root README."""
 
 from __future__ import annotations
 
@@ -241,6 +241,8 @@ def table_cell(value: str, field: str, skill: Skill) -> str:
 
 
 def render_catalog(
+    repository_root: Path,
+    root_readme: Path,
     skills: list[Skill],
     catalog_template: str,
     catalog_template_path: Path,
@@ -254,7 +256,6 @@ def render_catalog(
     ):
         title = table_cell(skill.title, "title", skill)
         version = table_cell(skill.version, "version", skill)
-        license_name = table_cell(skill.license, "license", skill)
         category = table_cell(
             skill.catalog_category,
             "catalog.category",
@@ -268,9 +269,13 @@ def render_catalog(
                     "title": title,
                     "skill_name": skill.name,
                     "version": version,
-                    "license": license_name,
                     "category": category,
                     "summary": summary,
+                    "release_asset_link": release_asset_link(
+                        repository_root,
+                        root_readme,
+                        skill.name,
+                    ),
                 },
                 row_template_path,
             ).rstrip()
@@ -300,24 +305,16 @@ def replace_generated_section(
     return document[:start] + expected.rstrip() + document[end:]
 
 
-def replace_root_sections(
+def replace_root_catalog(
     readme: Path,
     catalog: str,
-    installation: str,
 ) -> str:
     current = readme.read_text(encoding="utf-8")
-    with_catalog = replace_generated_section(
+    return replace_generated_section(
         current,
         catalog,
         "<!-- BEGIN GENERATED: root catalog -->",
         "<!-- END GENERATED: root catalog -->",
-        readme,
-    )
-    return replace_generated_section(
-        with_catalog,
-        installation,
-        "<!-- BEGIN GENERATED: root installation -->",
-        "<!-- END GENERATED: root installation -->",
         readme,
     )
 
@@ -348,18 +345,12 @@ def main() -> None:
     readme_template_path = templates_root / "skill-readme.md"
     catalog_template_path = templates_root / "root-catalog.md"
     catalog_row_template_path = templates_root / "catalog-row.md"
-    root_installation_template_path = (
-        templates_root / "root-installation.md"
-    )
     changelog_link_template_path = templates_root / "changelog-link.md"
     capability_template_path = templates_root / "capability.md"
     sample_prompt_template_path = templates_root / "sample-prompt.md"
     readme_template = readme_template_path.read_text(encoding="utf-8")
     catalog_template = catalog_template_path.read_text(encoding="utf-8")
     catalog_row_template = catalog_row_template_path.read_text(
-        encoding="utf-8"
-    )
-    root_installation_template = root_installation_template_path.read_text(
         encoding="utf-8"
     )
     changelog_link = changelog_link_template_path.read_text(
@@ -399,19 +390,16 @@ def main() -> None:
             stale.append(readme)
 
     root_readme = repository_root / "README.md"
-    expected_root = replace_root_sections(
+    expected_root = replace_root_catalog(
         root_readme,
         render_catalog(
+            repository_root,
+            root_readme,
             skills,
             catalog_template,
             catalog_template_path,
             catalog_row_template,
             catalog_row_template_path,
-        ),
-        render_template(
-            root_installation_template,
-            {},
-            root_installation_template_path,
         ),
     )
     if update_file(root_readme, expected_root, arguments.check):

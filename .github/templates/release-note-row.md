@@ -1,0 +1,1 @@
+| [{{ title }}](https://github.com/{{ repository }}/tree/{{ release_tag }}/skills/{{ skill_name }}/) | `{{ version }}` | {{ status }} | [{{ skill_name }}.zip](https://github.com/{{ repository }}/releases/download/{{ release_tag }}/{{ skill_name }}.zip) | {{ summary }} |

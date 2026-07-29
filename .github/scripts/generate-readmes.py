@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import argparse
 import os
-import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import yaml
+
+from template_engine import render_repeated, render_template
 
 
 README_KEYS = {
@@ -21,7 +22,6 @@ README_KEYS = {
     "catalog",
 }
 CATALOG_KEYS = {"order", "category", "summary"}
-PLACEHOLDER = re.compile(r"{{\s*([^{}]+?)\s*}}")
 
 
 @dataclass(frozen=True)
@@ -172,23 +172,6 @@ def load_skill(manifest: Path, skills_root: Path) -> Skill:
     )
 
 
-def render_template(
-    template: str,
-    values: dict[str, str],
-    template_path: Path,
-) -> str:
-    required = set(PLACEHOLDER.findall(template))
-    missing = required - set(values)
-    if missing:
-        raise ValueError(
-            f"{template_path}: no values supplied for "
-            f"{', '.join(sorted(missing))}"
-        )
-
-    rendered = PLACEHOLDER.sub(lambda match: values[match.group(1)], template)
-    return re.sub(r"\n{3,}", "\n\n", rendered).strip() + "\n"
-
-
 def release_asset_link(
     repository_root: Path,
     readme: Path,
@@ -198,22 +181,6 @@ def release_asset_link(
     # GitHub renders a nested README below its `tree/<revision>/` URL.
     repository_route = "../" * (source_depth + 2)
     return f"{repository_route}releases/latest/download/{skill_name}.zip"
-
-
-def render_repeated(
-    items: tuple[str, ...],
-    item_name: str,
-    item_template: str,
-    item_template_path: Path,
-) -> str:
-    return "\n".join(
-        render_template(
-            item_template,
-            {item_name: item},
-            item_template_path,
-        ).rstrip()
-        for item in items
-    )
 
 
 def render_skill_readme(

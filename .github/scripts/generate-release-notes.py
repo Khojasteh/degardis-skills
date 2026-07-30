@@ -121,6 +121,8 @@ def resolve_previous_ref(
 
 def skill_status(
     repository_root: Path,
+    repository: str,
+    release_tag: str,
     skill: Skill,
     previous_ref: str | None,
 ) -> str:
@@ -153,7 +155,11 @@ def skill_status(
     if comparison.returncode == 0:
         return "Unchanged"
     if comparison.returncode == 1:
-        return "Revised"
+        changelog_url = (
+            f"https://github.com/{repository}/blob/{release_tag}/"
+            f"{relative_directory.as_posix()}/CHANGELOG.md"
+        )
+        return f"[Revised]({changelog_url})"
     detail = comparison.stderr.strip() or comparison.stdout.strip()
     raise ValueError(f"Could not compare {skill.name}: {detail}")
 
@@ -199,6 +205,8 @@ def render_notes(
                     "summary": table_cell(skill.summary, "summary", skill),
                     "status": skill_status(
                         repository_root,
+                        repository,
+                        release_tag,
                         skill,
                         previous_ref,
                     ),

@@ -1,8 +1,3 @@
-Ready-to-install ZIP archives for every skill in this repository. Each archive
-contains all profiles available for that skill.
+This release, dated {{ snapshot_date }}, contains downloadable bundles for every skill in this collection. Every skill not listed below carries forward unchanged from its previous release.
 
-## Skills in this snapshot
-
-| Skill | Version | Status | Download | Summary |
-| --- | --- | --- | --- | --- |
-{{ release_rows }}
+{{ sections }}

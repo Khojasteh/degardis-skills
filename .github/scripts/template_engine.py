@@ -25,20 +25,3 @@ def render_template(
 
     rendered = PLACEHOLDER.sub(lambda match: values[match.group(1)], template)
     return re.sub(r"\n{3,}", "\n\n", rendered).strip() + "\n"
-
-
-def render_repeated(
-    items: tuple[str, ...],
-    item_name: str,
-    item_template: str,
-    item_template_path: Path,
-) -> str:
-    """Render one template for each item without adding blank table rows."""
-    return "\n".join(
-        render_template(
-            item_template,
-            {item_name: item},
-            item_template_path,
-        ).rstrip()
-        for item in items
-    )

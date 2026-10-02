@@ -1,17 +1,28 @@
-"""Generate release notes for a complete snapshot of bundled skills."""
+"""Generate narrative release notes for a dated snapshot of bundled skills."""
 
 from __future__ import annotations
 
 import argparse
 import os
-import subprocess
+import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 import yaml
 
+import changelog
+import repo_git
 from template_engine import render_template
+
+
+TAG_DATE = re.compile(r"^skills-(\d{4}-\d{2}-\d{2})(?:\.\d+)?$")
+
+NEVER_RELEASED = "Never released"
+HELD = "Held"
+NEW = "New"
+UPDATED = "Updated"
+PUBLISHED = "Published"
 
 
 @dataclass(frozen=True)
@@ -20,6 +31,15 @@ class Skill:
     title: str
     name: str
     version: str
+    description: str
+    short_description: str
+    history: changelog.Changelog | None
+
+
+@dataclass(frozen=True)
+class Classified:
+    skill: Skill
+    status: str
     summary: str
 
 
@@ -50,177 +70,184 @@ def required_text(data: dict[str, Any], key: str, path: Path) -> str:
     return value.strip()
 
 
+def snapshot_date(release_tag: str) -> str:
+    match = TAG_DATE.match(release_tag)
+    if not match:
+        raise ValueError(
+            f"Tag must be skills-YYYY-MM-DD or skills-YYYY-MM-DD.N: {release_tag}"
+        )
+    return match.group(1)
+
+
+def skill_title(data: dict[str, Any], path: Path) -> str:
+    """The name a release note shows.
+
+    `interface.display_name` is the one human-readable name a manifest declares,
+    and Degardis requires it, so a source that reaches a release always has one.
+    """
+    interface = data.get("interface")
+    value = interface.get("display_name") if isinstance(interface, dict) else None
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+    raise ValueError(f"{path}: needs an interface.display_name")
+
+
 def load_skill(manifest: Path) -> Skill:
-    skill_data = load_mapping(manifest)
-    documentation_path = manifest.with_name("readme.yaml")
-    documentation = load_mapping(documentation_path)
-    catalog = documentation.get("catalog")
-    if not isinstance(catalog, dict):
-        raise ValueError(f"{documentation_path}: catalog must be a mapping")
+    data = load_mapping(manifest)
+    interface = data.get("interface")
+    short_description = ""
+    if isinstance(interface, dict):
+        value = interface.get("short_description")
+        if isinstance(value, str):
+            short_description = value.strip()
 
     return Skill(
         directory=manifest.parent,
-        title=required_text(skill_data, "title", manifest),
-        name=required_text(skill_data, "name", manifest),
-        version=required_text(skill_data, "version", manifest),
-        summary=required_text(catalog, "summary", documentation_path),
+        title=skill_title(data, manifest),
+        name=required_text(data, "name", manifest),
+        version=required_text(data, "version", manifest),
+        description=required_text(data, "description", manifest),
+        short_description=short_description,
+        history=changelog.load(manifest.with_name("CHANGELOG.md")),
     )
 
 
-def git(
+def classify_skill(
     repository_root: Path,
-    *arguments: str,
-    check: bool = True,
-) -> subprocess.CompletedProcess[str]:
-    result = subprocess.run(
-        ["git", *arguments],
-        cwd=repository_root,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    if check and result.returncode:
-        detail = result.stderr.strip() or result.stdout.strip()
-        raise ValueError(f"git {' '.join(arguments)} failed: {detail}")
-    return result
-
-
-def resolve_previous_ref(
-    repository_root: Path,
+    skill: Skill,
     release_tag: str,
-    requested_ref: str | None,
-) -> str | None:
-    if requested_ref:
-        result = git(
-            repository_root,
-            "rev-parse",
-            "--verify",
-            f"{requested_ref}^{{commit}}",
+    held: set[str],
+) -> Classified:
+    """Decide a skill's part in this snapshot from its changelog and its diff."""
+    if skill.history is None:
+        return Classified(skill, NEVER_RELEASED, "")
+
+    latest = skill.history.latest
+    if latest is None:
+        raise ValueError(f"{skill.history.path}: contains no released version")
+
+    expected_date = snapshot_date(release_tag)
+    if latest.date > expected_date:
+        raise ValueError(
+            f"{skill.name}: the changelog already records version {latest.version} "
+            f"on {latest.date}, which is later than the {expected_date} snapshot "
+            "being released"
         )
-        return result.stdout.strip()
 
-    result = git(
-        repository_root,
-        "tag",
-        "--merged",
-        "HEAD",
-        "--list",
-        "skills-*",
-        "--sort=-version:refname",
-    )
-    for tag in result.stdout.splitlines():
-        if tag != release_tag:
-            return git(
-                repository_root,
-                "rev-parse",
-                "--verify",
-                f"{tag}^{{commit}}",
-            ).stdout.strip()
-    return None
+    if latest.date == expected_date:
+        if latest.version != skill.version:
+            raise ValueError(
+                f"{skill.name}: skill.yaml declares version {skill.version}, but "
+                f"the section dated for this snapshot is {latest.version}"
+            )
+        if latest.tag != release_tag:
+            raise ValueError(
+                f"{skill.name}: the changelog links version {latest.version} to "
+                f"tag {latest.tag}, but this snapshot is {release_tag}"
+            )
+        summary = latest.summary or skill.short_description or skill.description
+        first_release = len(skill.history.releases) == 1
+        return Classified(skill, NEW if first_release else UPDATED, summary)
+
+    # Released earlier. It carries forward unchanged unless its source moved on,
+    # in which case holding it back has to be said out loud.
+    changed = repo_git.source_changed(repository_root, skill.name, latest.tag)
+    if changed and skill.name not in held:
+        raise ValueError(
+            f"{skill.name}: bundle content has changed since {latest.tag}, but this "
+            "snapshot neither releases it nor holds it back. Add a changelog "
+            f"section dated {expected_date}, or pass --hold {skill.name}."
+        )
+    return Classified(skill, HELD if changed else PUBLISHED, "")
 
 
-def skill_status(
-    repository_root: Path,
+def render_skill_section(
+    skill: Skill,
+    summary: str,
     repository: str,
     release_tag: str,
-    skill: Skill,
-    previous_ref: str | None,
+    template: str,
+    template_path: Path,
 ) -> str:
-    if previous_ref is None:
-        return "New"
-
-    relative_directory = skill.directory.relative_to(repository_root)
-    previous_tree = git(
-        repository_root,
-        "ls-tree",
-        "-d",
-        "--name-only",
-        previous_ref,
-        "--",
-        relative_directory.as_posix(),
-    )
-    if not previous_tree.stdout.strip():
-        return "New"
-
-    comparison = git(
-        repository_root,
-        "diff",
-        "--quiet",
-        previous_ref,
-        "HEAD",
-        "--",
-        relative_directory.as_posix(),
-        check=False,
-    )
-    if comparison.returncode == 0:
-        return "Unchanged"
-    if comparison.returncode == 1:
-        changelog_url = (
-            f"https://github.com/{repository}/blob/{release_tag}/"
-            f"{relative_directory.as_posix()}/CHANGELOG.md"
-        )
-        return f"[Revised]({changelog_url})"
-    detail = comparison.stderr.strip() or comparison.stdout.strip()
-    raise ValueError(f"Could not compare {skill.name}: {detail}")
+    return render_template(
+        template,
+        {
+            "title": skill.title,
+            "skill_name": skill.name,
+            "version": skill.version,
+            "description": skill.description,
+            "summary": summary,
+            "repository": repository,
+            "release_tag": release_tag,
+        },
+        template_path,
+    ).rstrip()
 
 
-def table_cell(value: str, field: str, skill: Skill) -> str:
-    if "\n" in value or "|" in value:
-        raise ValueError(
-            f"{skill.directory}: {field} cannot contain newlines or "
-            "vertical bars"
-        )
-    return value
+def render_retired_section(
+    entry: repo_git.Retirement,
+    template: str,
+    template_path: Path,
+) -> str:
+    return render_template(
+        template,
+        {
+            "title": entry.title,
+            "skill_name": entry.name,
+            "last_version": entry.last_version,
+            "reason": entry.reason,
+        },
+        template_path,
+    ).rstrip()
 
 
 def render_notes(
-    repository_root: Path,
-    skills_root: Path,
+    classified: list[Classified],
+    retirements: list[repo_git.Retirement],
     repository: str,
     release_tag: str,
-    previous_ref: str | None,
-    notes_template: str,
-    notes_template_path: Path,
-    row_template: str,
-    row_template_path: Path,
+    templates: dict[str, tuple[str, Path]],
 ) -> str:
-    skills = sorted(
-        (load_skill(manifest) for manifest in discover_skills(skills_root)),
-        key=lambda skill: skill.title.casefold(),
+    grouped: dict[str, list[str]] = {NEW: [], UPDATED: []}
+    for entry in classified:
+        if entry.status in grouped:
+            template, path = templates[entry.status]
+            grouped[entry.status].append(
+                render_skill_section(
+                    entry.skill, entry.summary, repository, release_tag, template, path
+                )
+            )
+
+    sections: list[str] = []
+    if retirements:
+        template, path = templates["retired"]
+        body = "\n\n".join(
+            render_retired_section(entry, template, path)
+            for entry in sorted(retirements, key=lambda item: item.title.casefold())
+        )
+        sections.append(f"### Retirements\n\n{body}")
+    if grouped[NEW]:
+        sections.append("### New skills\n\n" + "\n\n".join(grouped[NEW]))
+    if grouped[UPDATED]:
+        sections.append("### Improvements\n\n" + "\n\n".join(grouped[UPDATED]))
+
+    template, path = templates["notes"]
+    return render_template(
+        template,
+        {
+            "snapshot_date": snapshot_date(release_tag),
+            "sections": "\n\n".join(sections),
+        },
+        path,
     )
 
-    names = [skill.name for skill in skills]
-    if len(names) != len(set(names)):
-        raise ValueError("Skill names must be unique")
 
-    rows = []
-    for skill in skills:
-        rows.append(
-            render_template(
-                row_template,
-                {
-                    "title": table_cell(skill.title, "title", skill),
-                    "skill_name": skill.name,
-                    "version": table_cell(skill.version, "version", skill),
-                    "summary": table_cell(skill.summary, "summary", skill),
-                    "status": skill_status(
-                        repository_root,
-                        repository,
-                        release_tag,
-                        skill,
-                        previous_ref,
-                    ),
-                    "repository": repository,
-                    "release_tag": release_tag,
-                },
-                row_template_path,
-            ).rstrip()
-        )
-
-    return render_template(
-        notes_template,
-        {"release_rows": "\n".join(rows)},
-        notes_template_path,
+def write_names(path: Path, names: list[str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        "".join(f"{name}\n" for name in names),
+        encoding="utf-8",
+        newline="\n",
     )
 
 
@@ -228,6 +255,29 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--skills", type=Path, default=Path("skills"))
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--hold",
+        action="append",
+        default=[],
+        metavar="SKILL",
+        help=(
+            "Skill whose changed source this snapshot deliberately does not "
+            "publish. Repeatable."
+        ),
+    )
+    parser.add_argument(
+        "--released-skills",
+        type=Path,
+        help="Optional file listing the skills to build, one name per line.",
+    )
+    parser.add_argument(
+        "--published-skills",
+        type=Path,
+        help=(
+            "Optional file listing every skill that must have a bundle attached, "
+            "one name per line."
+        ),
+    )
     parser.add_argument(
         "--repository",
         default=os.environ.get("GITHUB_REPOSITORY"),
@@ -251,31 +301,84 @@ def main() -> None:
     repository_root = Path(__file__).resolve().parents[2]
     skills_root = arguments.skills.resolve()
     templates_root = repository_root / ".github" / "templates"
-    notes_template_path = templates_root / "release-notes.md"
-    row_template_path = templates_root / "release-note-row.md"
-    previous_ref = resolve_previous_ref(
-        repository_root,
-        arguments.tag,
-        arguments.previous_ref,
+    templates = {
+        key: ((templates_root / filename).read_text(encoding="utf-8"), templates_root / filename)
+        for key, filename in (
+            ("notes", "release-notes.md"),
+            (NEW, "release-note-new-skill.md"),
+            (UPDATED, "release-note-updated-skill.md"),
+            ("retired", "release-note-retired-skill.md"),
+        )
+    }
+
+    skills = sorted(
+        (load_skill(manifest) for manifest in discover_skills(skills_root)),
+        key=lambda skill: skill.title.casefold(),
     )
+    names = [skill.name for skill in skills]
+    if len(names) != len(set(names)):
+        raise ValueError("Skill names must be unique")
+
+    held = set(arguments.hold)
+    unknown = held - set(names)
+    if unknown:
+        raise ValueError(f"--hold names no such skill: {', '.join(sorted(unknown))}")
+
+    classified = [
+        classify_skill(repository_root, skill, arguments.tag, held) for skill in skills
+    ]
+
+    previous_ref = arguments.previous_ref or repo_git.latest_snapshot_tag(
+        repository_root, exclude=arguments.tag
+    )
+    retirements: list[repo_git.Retirement] = []
+    if previous_ref:
+        retirements = repo_git.detect_retirements(
+            repository_root, previous_ref, present=set(names)
+        )
+    missing = [entry.name for entry in retirements if not entry.reason]
+    if missing:
+        raise ValueError(
+            "These retirements have no reason to announce: "
+            f"{', '.join(missing)}. Users are told why a skill was withdrawn and "
+            "what replaces it, and that reason is the body of the commit that "
+            "deleted it. Ask the maintainer for the reason — never infer one — "
+            "and put it in that commit."
+        )
+
+    released = sorted(
+        entry.skill.name for entry in classified if entry.status in (NEW, UPDATED)
+    )
+    if not released and not retirements:
+        raise ValueError(
+            f"No skill declares a release dated {snapshot_date(arguments.tag)} and "
+            "nothing was retired. Date a changelog section for at least one skill "
+            "before releasing."
+        )
 
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
     arguments.output.write_text(
-        render_notes(
-            repository_root,
-            skills_root,
-            arguments.repository,
-            arguments.tag,
-            previous_ref,
-            notes_template_path.read_text(encoding="utf-8"),
-            notes_template_path,
-            row_template_path.read_text(encoding="utf-8"),
-            row_template_path,
-        ),
+        render_notes(classified, retirements, arguments.repository, arguments.tag, templates),
         encoding="utf-8",
         newline="\n",
     )
 
+    if arguments.released_skills:
+        write_names(arguments.released_skills, released)
+
+    if arguments.published_skills:
+        write_names(
+            arguments.published_skills,
+            sorted(
+                entry.skill.name
+                for entry in classified
+                if entry.skill.history and entry.skill.history.releases
+            ),
+        )
+
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except ValueError as error:
+        raise SystemExit(f"error: {error}")

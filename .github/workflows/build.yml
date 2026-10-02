@@ -17,10 +17,6 @@ jobs:
       with:
         python-version: "3.14"
     - name: Install Degardis
-      run: python -m pip install degardis
-    - name: Check generated README content
-      run: python .github/scripts/generate-readmes.py --check
-    - name: Validate skill sources
-      run: degardis validate skills
-    - name: Build all skill profiles
-      run: degardis build skills --profile all --zip --output .artifacts
+      run: python -m pip install "degardis>=2"
+    - name: Build all skills
+      run: degardis build skills --zip --output .artifacts

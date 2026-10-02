@@ -124,6 +124,6 @@ jobs:
         snapshot="${RELEASE_TAG#skills-}"
         gh release create "$RELEASE_TAG" .artifacts/bundles/*.zip \
           --target "$GITHUB_SHA" \
-          --title "Downloadable skill bundles — $snapshot" \
+          --title "Degardis Skills — $snapshot" \
           --notes-file .artifacts/release-notes.md \
           --latest

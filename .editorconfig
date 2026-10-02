@@ -1,0 +1,18 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+max_line_length = off
+
+# Prose is never hard-wrapped: one line per paragraph, list item, table row, or
+# quoted line, and the reader's editor wraps it to the window it actually has.
+# Inside a fenced block, break only where a reader would — at a sentence or an
+# instruction, never at a margin.
+[*.md]
+max_line_length = off

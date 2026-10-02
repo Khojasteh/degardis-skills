@@ -1,0 +1,40 @@
+name: release-notes
+format_version: 2
+version: 1.3.0
+description: Write and review release notes for a software release from the change list that ships in it.
+principles:
+- reader-impact
+- ticket-references
+- authority-before-effect
+- claim-status
+- completion-evidence
+- proportionate-effort
+- source-authority
+- resumable-stopping
+- decision-provenance
+- bounded-delegation
+- coordinating-delegated-work
+- durable-state
+- complete-enumeration
+- reader-first-reporting
+- decision-relevant-questions
+- sensitive-material
+- instruction-authority
+tasks:
+- draft
+- review
+content:
+  tasks:
+  - tasks/*.md
+  knowledge:
+  - knowledge/*.md
+  principles:
+  - principles/*.md
+  facets:
+  - facets/*.md
+  guides:
+  - guides/*.md
+interface:
+  display_name: Release Notes
+  short_description: Write and review software release notes
+  default_prompt: Use release-notes to write release notes from this change list.

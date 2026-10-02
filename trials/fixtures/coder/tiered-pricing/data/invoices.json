@@ -1,0 +1,52 @@
+[
+  {
+    "number": "INV-0001",
+    "customer": "C-1003",
+    "billed_to": "Harbour Analytics",
+    "lines": [
+      {
+        "sku": "CHAIR-02",
+        "quantity": 4
+      }
+    ],
+    "subtotal": "500.00",
+    "discount": "10.00",
+    "total": "490.00"
+  },
+  {
+    "number": "INV-0002",
+    "customer": "C-1001",
+    "billed_to": "Aurora Bindery",
+    "lines": [
+      {
+        "sku": "DESK-01",
+        "quantity": 1
+      },
+      {
+        "sku": "LAMP-03",
+        "quantity": 1
+      }
+    ],
+    "subtotal": "464.50",
+    "discount": "9.29",
+    "total": "455.21"
+  },
+  {
+    "number": "INV-0003",
+    "customer": "C-1002",
+    "billed_to": "Pinewood Studios Ltd",
+    "lines": [
+      {
+        "sku": "DESK-01",
+        "quantity": 2
+      },
+      {
+        "sku": "ARM-05",
+        "quantity": 2
+      }
+    ],
+    "subtotal": "1027.50",
+    "discount": "102.75",
+    "total": "924.75"
+  }
+]

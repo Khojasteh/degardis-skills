@@ -1,0 +1,13 @@
+[project]
+name = "reporting"
+version = "2.4.1"
+description = "Nightly account activity report"
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["reporting*"]

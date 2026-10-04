@@ -1,7 +1,8 @@
 ---
 title: Resumable stopping
 applicability:
-- When the work may end before its requested outcome is complete
+- When the work may end before an outcome it was asked for is complete
+- When another session or agent is to take over this work
 - Before starting a sequence that would leave damage if it stopped partway
 ---
 

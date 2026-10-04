@@ -1,6 +1,6 @@
 name: degardis-authoring
 format_version: 2
-version: 2.0.0
+version: 2.1.0
 license: MIT
 copyright: Copyright (c) 2026 Kambiz Khojasteh
 description: Author Degardis skills by carrying out requests about the Degardis format and compiler or about a skill's Degardis source, bundle, or behavior, grounded in the effective compiler and supplied evidence. Installing, replacing, publishing, or releasing bundles is outside this skill.
@@ -17,6 +17,7 @@ principles:
 - proportionate-effort
 - source-authority
 - reader-first-reporting
+- self-standing-artifacts
 - decision-relevant-questions
 - sensitive-material
 - instruction-authority

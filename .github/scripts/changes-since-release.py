@@ -37,16 +37,32 @@ def construct_files(repository_root: Path, name: str, ref: str) -> list[str]:
     return [line for line in output.splitlines() if line.strip()]
 
 
-def report_skill(repository_root: Path, directory: Path, ref: str) -> None:
+def last_published(
+    repository_root: Path, history: changelog.Changelog | None
+) -> changelog.Release | None:
+    """Newest release whose snapshot tag exists.
+
+    While a snapshot is being prepared, the changelog already holds its section,
+    but its tag is created only when it is published.
+    """
+    for release in history.releases if history else ():
+        if repo_git.git(
+            repository_root, "rev-parse", "--verify", "--quiet",
+            f"{release.tag}^{{commit}}", check=False,
+        ).returncode == 0:
+            return release
+    return None
+
+
+def report_skill(
+    repository_root: Path, directory: Path, ref: str, *, explicit: bool
+) -> None:
     name = directory.name
     manifest = yaml.safe_load((directory / "skill.yaml").read_text(encoding="utf-8")) or {}
-    history = changelog.load(directory / "CHANGELOG.md")
-    released = history.latest if history else None
-    since = released.tag if released else ref
+    released = last_published(repository_root, changelog.load(directory / "CHANGELOG.md"))
+    since = released.tag if released and not explicit else ref
 
-    if released and not repo_git.source_changed(repository_root, name, since):
-        return
-    if not released and not repo_git.source_changed(repository_root, name, ref):
+    if not repo_git.source_changed(repository_root, name, since):
         return
 
     print(f"\n{'=' * 78}\n{name}  —  manifest {manifest.get('version', '?')}", end="")
@@ -86,7 +102,11 @@ def report_skill(repository_root: Path, directory: Path, ref: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("skill", nargs="?", help="Limit the report to one skill.")
-    parser.add_argument("--since", help="Ref to compare with; defaults to the latest snapshot tag.")
+    parser.add_argument(
+        "--since",
+        help="Ref to compare every skill with; defaults to each skill's last "
+        "published release, or the latest snapshot tag for a skill never released.",
+    )
     arguments = parser.parse_args()
 
     repository_root = Path(__file__).resolve().parents[2]
@@ -101,7 +121,7 @@ def main() -> None:
     for directory in sorted(directories, key=lambda path: path.name):
         if arguments.skill and directory.name != arguments.skill:
             continue
-        report_skill(repository_root, directory, ref)
+        report_skill(repository_root, directory, ref, explicit=bool(arguments.since))
 
     if arguments.skill:
         return

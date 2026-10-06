@@ -1,7 +1,7 @@
 ---
 title: Revise existing Degardis source
 cues:
-- the requester authorizes changing a Degardis source that already exists, and the host permits it
+- the requester asks for and authorizes a change to existing Degardis source, and the host permits it
 goal: Implement the authorized behavior in the effective compiler's accepted format, account for every affected starting contribution, and support the completion claim against the exact final state.
 knowledge:
 - working-accounts

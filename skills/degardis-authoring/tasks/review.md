@@ -42,10 +42,10 @@ handoffs:
   - When completed interactions are supplied as evidence and their attribution to the source has neither an unfinished evaluation responsible for it nor an evaluation outcome on this route
 - task: revise
   applicability:
-  - When the requester authorized fixing what the review finds, the host permits changing the source, and the review admits a finding within that authority that has neither an unfinished revision responsible for it nor a revision outcome on this route
+  - When the review admits a finding the requester asked to fix, changing its supplied Degardis source is authorized and permitted by the host, and no unfinished revision or revision outcome on this route covers the finding
 - task: plan
   applicability:
-  - When the requester authorized fixing what the review finds, host instructions prohibit changing the source, and the review admits a finding within that authority that has neither an unfinished plan responsible for it nor a planning outcome on this route
+  - When the review admits a finding the requester asked to fix, host instructions prohibit changing its supplied Degardis source, and no unfinished plan or planning outcome on this route covers the finding
 ---
 
 For editable source, use the effective compiler to enumerate every input, construct, declared relationship, and generated output inside the request boundary; for a built artifact, establish the set from the effective root and its own layout. A named concern narrows the criterion applied, not the enumerated surface.

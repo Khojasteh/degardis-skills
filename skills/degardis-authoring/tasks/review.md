@@ -22,17 +22,9 @@ knowledge:
 - earliest-authored-cause
 guides:
 - effective-compiler
-- construct-ownership
-- obligation-ledger
-- construct-agreements
-- path-rehearsal
 - behavioral-preservation
 - names-and-headings
 - wording-and-references
-- guide-design
-- task-cues
-- handoff-conditions
-- facet-design
 - restructuring-on-evidence
 - version-selection
 - supplied-artifact

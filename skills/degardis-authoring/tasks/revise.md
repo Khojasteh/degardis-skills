@@ -19,10 +19,8 @@ knowledge:
 - source-repair
 guides:
 - effective-compiler
-- construct-ownership
 - obligation-ledger
 - construct-agreements
-- path-rehearsal
 - behavioral-preservation
 - names-and-headings
 - wording-and-references
@@ -31,7 +29,6 @@ guides:
 - handoff-conditions
 - facet-design
 - restructuring-on-evidence
-- whole-construct-rewrite
 - version-selection
 - supplied-artifact
 handoffs:

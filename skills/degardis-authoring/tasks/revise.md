@@ -43,6 +43,7 @@ handoffs:
   applicability:
   - When the defect's evidence is completed interactions whose attribution to the source has neither an unfinished evaluation responsible for it nor an evaluation outcome on this route
   - When a repaired defect was established by evaluation and its exact final state has neither an unfinished evaluation responsible for re-evaluating it nor a re-evaluation outcome on this route
+  - When a required runtime-only acceptance question has neither an unfinished evaluation responsible for it nor an evaluation outcome against the revision's exact final state on this route, and authority and host capability permit that evaluation
 ---
 
 Frame the change before editing: what the request authorizes, which behavior is meant to change, the independently derived obligations affected, and what already owns them. When only a built bundle or installed skill is supplied, there is no source to revise: report that part as unsupported without the source that produced it, and leave the artifact as it is.

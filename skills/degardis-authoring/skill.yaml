@@ -3,7 +3,7 @@ format_version: 2
 version: 2.1.0
 license: MIT
 copyright: Copyright (c) 2026 Kambiz Khojasteh
-description: "Author, review, and build Degardis skills, explain the format and compiler, and answer questions about supplied skills or evaluate their behavior, regardless of format or source availability. Installing, replacing, publishing, or releasing bundles is outside this skill."
+description: "Write, review, plan, revise, and build Degardis skill source, and explain the format, compiler, and authoring choices. Describe or test any skill, with or without its source. Installing, replacing, publishing, or releasing bundles is outside this skill."
 principles:
 - authority-before-effect
 - claim-status

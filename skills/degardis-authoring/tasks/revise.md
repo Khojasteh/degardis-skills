@@ -45,6 +45,6 @@ handoffs:
 
 Frame the change before editing: what the request authorizes, which behavior is meant to change, the independently derived obligations affected, and what already owns them. When only a built bundle or installed skill is supplied, there is no source to revise: report that part as unsupported without the source that produced it, and leave the artifact as it is.
 
-Before the first edit that could destroy or obscure the starting behavior, establish the preservation account and record every affected starting contribution with inspectable evidence. Do not edit until that starting-state inventory is complete. When it applies, read [[guide:whole-construct-rewrite]] before the change edits maintained source.
+Before the first edit, establish the preservation account and record every affected starting contribution with inspectable evidence. When it applies, read [[guide:whole-construct-rewrite]] before the change edits maintained source.
 
 After the last edit, read every changed generated page end to end as a cold reader who never saw the old text: the changed lines show the edit, not the page, and a sentence that read correctly beside its predecessor can read as its opposite alone, or make sense only beside it. Begin final validation only once every surface is closed on that state as [[guide:path-rehearsal]] requires, every affected member has a terminal disposition, and every required case passes; then validate the exact final source.

@@ -28,7 +28,7 @@ If several candidates are available and none was supplied or designated, do not 
 
 ## Acquiring or changing a compiler
 
-Accessing a package source, installing prerequisites, installing Degardis, upgrading it, or replacing the effective compiler are separate actions. Take one only when that exact reach/effect is authorized and the active task permits it. Authorization for one action authorizes none of the others.
+Accessing a package source, installing prerequisites, installing Degardis, upgrading it, or replacing the effective compiler are separate actions. Take one only when that exact reach/effect is authorized and the active task permits it.
 
 For public-package installation, use the latest stable release unless the requester or standing instructions specify a version or source. Before changing the environment, check its runtime and tooling against the package's current installation instructions; if no compatible method is available, report the blocker rather than install an older release.
 
@@ -43,4 +43,4 @@ With pip, invoke it through the target environment's own interpreter, as `<inter
 
 If the compiler supplies no manual for the source format, obtain an authoritative format reference within the authorized read boundary or leave the format contract unresolved.
 
-After any authorized prerequisite action, verify its result; for installation, record the version and invocation and compare the installed version with the intended release. A failed or unchanged prerequisite is reported once with the next evidence or authority needed; do not repeat an equivalent attempt.
+After any authorized prerequisite action, verify its result; for installation, record the version and invocation and compare the installed version with the intended release. A failed or unchanged prerequisite is reported once with the next evidence or authority needed.

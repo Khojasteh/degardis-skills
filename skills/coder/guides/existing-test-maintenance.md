@@ -7,7 +7,7 @@ applicability:
 
 For each test under question, identify the contract it can distinguish, what change should make it fail, and whether that change is forbidden. A passing test is not useful merely because it executes code, and an awkward test is not disposable merely because its value is hard to see.
 
-Establish those answers from the contract, product code and consumers, or version-control history rather than from the test alone. When an assertion supplies a literal being searched, exclude test material from the product-side search and prove the query can match a known product occurrence before treating an empty result as evidence.
+Establish those answers from the contract, product code and consumers, or version-control history rather than from the test alone. When an assertion supplies a literal being searched, exclude test material from the product-side search, where the assertion's own copy of the literal would match.
 
 Classify a test for repair when its contract remains required but its setup, assertion, fixture, or harness no longer expresses that contract correctly. Classify it for removal only when the contract was intentionally retired, the test cannot distinguish a prohibited change, or another named check demonstrably subsumes its failure space. Keep it when the evidence cannot establish one of those dispositions. State the evidence that decided each disposition and leave an unsettled overlap explicit.
 

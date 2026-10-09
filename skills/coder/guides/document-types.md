@@ -48,6 +48,12 @@ x-claim-provenance:
 - claim: An architecture document gives a codemap of coarse modules and their relations, architectural invariants, boundaries, and cross-cutting concerns, names files and types instead of linking them, and leaves per-module detail elsewhere.
   source: https://matklad.github.io/2021/02/06/ARCHITECTURE.md.html
   scope: retrieved 2026-10-05
+- claim: A design doc is written before coding for others to review, records the high-level implementation strategy and key design decisions with emphasis on trade-offs, and covers context and scope, goals and non-goals, the design from overview to detail, alternatives considered and why their trade-offs ruled them out, and cross-cutting concerns such as security, privacy, and observability.
+  source: https://www.industrialempathy.com/posts/design-docs-at-google/
+  scope: published 2020-07-06, retrieved 2026-10-10
+- claim: A design proposal states its motivation, the proposed design, its drawbacks, the rationale against alternatives, and the questions to resolve before it is accepted.
+  source: https://github.com/rust-lang/rfcs/blob/master/0000-template.md
+  scope: retrieved 2026-10-10
 - claim: An architecture decision record has a title, context, decision, status, and consequences, and a changed decision gets a new record while the old one is marked superseded.
   source: https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions
   scope: retrieved 2026-10-05
@@ -83,6 +89,7 @@ These three carry change over time, each for a reader at a different moment.
 
 - **Contributing guide:** for a prospective contributor. Explain how to report a bug, propose a feature, set up the environment and run the tests, and prepare a change the project will accept, along with the contributions wanted, where to ask questions, and the conduct expected.
 - **Architecture overview:** for a contributor finding their way around the code. Map the coarse modules and how they relate, so it answers where the thing that does X lives. Call out the invariants, which are often things that must never happen, the boundaries between layers, how data flows between modules, where the design expects extension, and cross-cutting concerns. Name important files, modules, and types instead of linking them, leave per-module detail to the code and its comments, and keep to what rarely changes.
+- **Design proposal:** for reviewers deciding whether a design should be built, before it is. Give the context and scope, the goals and the non-goals a reader could take for goals, and the proposed design from an overview down to the interfaces, data, and boundaries that carry its trade-offs. Then give each reasonable alternative and the trade-off that rules it out, the drawbacks the proposal accepts, its effect on cross-cutting concerns such as security, privacy, and observability, and the questions still to settle. Leave out the ordered work of carrying it out, which belongs to a plan.
 - **Decision record:** for current and future maintainers who need to know why something is the way it is. Give a title, the context and forces in neutral terms, the decision in active voice, its status, and all of its consequences, not only the good ones. When the decision changes, write a new record and mark the old one superseded rather than editing it.
 - **Security policy:** for someone who has found a vulnerability. State which versions receive security fixes and how to report a vulnerability.
 

@@ -42,8 +42,8 @@ handoffs:
 
 Diagnosis is the deliverable. Do not turn a likely fix into an edit, and do not treat a successful workaround as proof of cause.
 
-Define the reproduction first, as [[guide:failure-investigation]] describes it. Start from supplied failures and existing artifacts, then search for the symbols and boundaries they name. Read the implicated path before broadening the search. Run a focused reproduction only when it is safe, authorized, and able to distinguish competing explanations.
+Define the reproduction first, as [[guide:failure-investigation]] describes it. Start from supplied failures and existing artifacts, then search for the symbols and boundaries they name. Read the implicated path before broadening the search. Run a focused reproduction only when it is safe and can distinguish competing explanations; the request for the cause authorizes one whose effects stay confined to disposable output, and any other effect needs authority of its own.
 
-Trace the symptom to the first state or decision that departs from the established contract, and report the cause at the layer where that departure occurs: a test, harness, environment, or configuration cause is reported as such, not as a product defect.
+Trace the symptom to the first state or decision that departs from the established contract, and report the cause at the layer where that departure occurs.
 
 Report the established cause and its location, or the narrowest supported explanation with its confidence and remaining uncertainty. Name the evidence that ruled out material alternatives, the surface reached, and the next check that would settle any blocking unknown. Proposed repairs remain clearly proposed.

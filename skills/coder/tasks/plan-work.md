@@ -46,7 +46,7 @@ guides:
 handoffs:
 - task: implement-change
   applicability:
-  - When the requester authorized carrying out the plan, its finished state changes existing software beyond reader-facing project text and does more than withdraw a capability, and the plan is neither carried out nor pending on this route
+  - When the requester authorized carrying out the plan, its finished state changes existing software beyond project documentation and does more than withdraw a capability, and the plan is neither carried out nor pending on this route
 - task: create-product
   applicability:
   - When the requester authorized carrying out the plan, its finished state is a new product, and the plan is neither carried out nor pending on this route
@@ -55,7 +55,7 @@ handoffs:
   - When the requester authorized carrying out the plan, its finished state is a withdrawal, and the plan is neither carried out nor pending on this route
 - task: document-software
   applicability:
-  - When the requester authorized carrying out the plan, its finished state changes only reader-facing project text, and the plan is neither carried out nor pending on this route
+  - When the requester authorized carrying out the plan, its finished state changes only project documentation, and the plan is neither carried out nor pending on this route
 ---
 
 A plan request asks for decisions and sequence, not speculative edits or a patch, so the plan document the request asks for is the only project material it may write.

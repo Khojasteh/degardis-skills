@@ -1,7 +1,7 @@
 ---
 title: Document types
 applicability:
-- When a document's type, or what that type owes its reader, is being chosen or judged
+- When a document's type, or what that type owes its reader, decides what a document contains or how it is judged
 x-claim-provenance:
 - claim: A README tells people what the project does, why it is useful, how to get started, where to get help, and who maintains and contributes to it; longer documentation belongs elsewhere.
   source: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-readmes

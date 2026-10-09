@@ -41,10 +41,10 @@ guides:
 handoffs:
 - task: implement-change
   applicability:
-  - When the requester authorized correcting what the review finds, and an established finding within that authority needs a correction that changes anything beyond reader-facing project text and is neither made nor pending on this route
+  - When the requester authorized correcting what the review finds, and an established finding within that authority needs a correction that changes anything beyond project documentation and is neither made nor pending on this route
 - task: document-software
   applicability:
-  - When the requester authorized correcting what the review finds, and an established finding within that authority needs a correction that changes only reader-facing project text and is neither made nor pending on this route
+  - When the requester authorized correcting what the review finds, and an established finding within that authority needs a correction that changes only project documentation and is neither made nor pending on this route
 ---
 
 Choose the boundary the request supplies: compare a change against its base, or inspect the named material as it stands. Read the change or entry points first, search for the contracts and consumers they touch, then inspect only the implicated units, tests, configuration, schemas, persisted formats, and recorded artifacts. Treat the covered surface as bounded when the request or available evidence does not establish the whole set.

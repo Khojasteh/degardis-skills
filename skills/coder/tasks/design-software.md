@@ -51,4 +51,4 @@ Establish the requested outcome, who decides on the design, the starting state t
 
 Where the evidence separates one viable design from the rest, recommend it; where it does not, present each viable design with the fact or decision that would separate them and who supplies it, since a recommendation the evidence cannot carry reads to the decider as settled.
 
-Write the proposal for whoever decides on it, who did not see the investigation, in the shape [[guide:document-types]] gives a design proposal, whether it is delivered in the response or as the design document the request asks for.
+Write the proposal for whoever decides on it, who did not see the investigation, in the shape [[guide:document-types]] gives the type of design document the request names, such as a decision record, or a design proposal when it names none, whether it is delivered in the response or as the design document the request asks for.

@@ -6,7 +6,7 @@ applicability:
 
 Keep the ledger and its ownership map in re-readable working state.
 
-Derive the ledger from the requested outcome, its authorities, supplied evidence, and accepted field facts before inventorying constructs, and keep it separate from the source inventory until both can be compared. Completeness is relative to the declared outcome contract, never universal.
+Derive the ledger from the requested outcome, its authorities, supplied evidence, and accepted field facts before inventorying constructs, and keep it separate from the source inventory until both can be compared. Completeness is relative to the declared outcome contract, never universal. Skill material supplied in another form is evidence for the ledger, not a source to transcribe: take from it what it establishes, and leave its arrangement behind, since each provision it carries is classified anew.
 
 For every request class and materially different initial state, record:
 

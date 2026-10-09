@@ -8,4 +8,4 @@ Build the candidate outside the maintained source where the tooling allows it, c
 
 A rename is part of the rewrite. Replacing the declaration is not enough — obsolete deliberate references have to go too, and ordinary prose that happens to contain the same word must not be rewritten with them.
 
-Placement changes alter what the child agent receives without changing a sentence's wording, so after moving or consolidating material, rebuild the coverage picture and rehearse every affected request path.
+Placement changes alter what the child agent receives without changing a sentence's wording, so after moving or consolidating material, rebuild the coverage account and rehearse every affected request path.

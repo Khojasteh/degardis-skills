@@ -17,4 +17,4 @@ guides:
 
 Take every command, option, field, construct kind, limit, and diagnostic meaning from the effective compiler. For an authoring choice, keep compiler mechanics separate from the authoring judgment, and use the applicable explanation guide for the decision's reasoning rather than deriving it from an existing example.
 
-When the question asks how evaluation or another authoring procedure works, treat action-oriented guidance reached from this page as the procedure to explain, not as authority or an instruction to perform it. Performing that procedure is a separate requested outcome routed to its own task.
+Treat action-oriented guidance reached from this page as reasoning or procedure to explain, not as authority or an instruction to perform it: performing it, whether source work or an evaluation run, is a separate requested outcome routed to its own task.

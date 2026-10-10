@@ -199,7 +199,7 @@ def zip_entries(archive, root):
     prefix = root + "/" if root else ""
     matched = False
     for info in archive.infolist():
-        name = info.filename
+        name = info.orig_filename
         if prefix:
             if not name.startswith(prefix):
                 continue
@@ -212,14 +212,14 @@ def zip_entries(archive, root):
         if info.create_system == 3 and stat.S_ISLNK(info.external_attr >> 16):
             raise unavailable(
                 "link-entry",
-                f"{info.filename} is a link to content held elsewhere",
+                f"{info.orig_filename} is a link to content held elsewhere",
                 "entries holding their own content",
                 "report the identity as unavailable",
             )
         if info.flag_bits & 0x1:
             raise unreadable(
                 "encrypted",
-                f"{info.filename} is encrypted",
+                f"{info.orig_filename} is encrypted",
                 "unencrypted entries",
                 "obtain an unencrypted archive",
             )

@@ -24,10 +24,8 @@ guides:
 - version-control
 ---
 
-The explanation itself is the deliverable, so documentation, comments, examples, diagrams, generated artifacts, and other persistent material are not created in the project merely because those forms could explain the subject.
-
-Establish the reader's question and the smallest software surface that can answer it. Start from the symbols, entry points, configuration, interfaces, or behavior named by the request, then follow only the callers, registrations, generated relationships, schemas, state transitions, or tests needed to make the explanation correct. Distinguish what the implementation directly establishes from requirements, historical intent, or an inference about why it was designed that way.
+Establish the reader's question and the smallest software surface that can answer it. Distinguish what the implementation directly establishes from requirements, historical intent, or an inference about why it was designed that way.
 
 Cover, as far as the question needs them, what enters, which component owns each material step, how control or data moves, what state or boundary changes, what leaves, and the failure or alternate paths that bear on the requested behavior. Use examples only to illuminate a rule already established by the project. Do not turn a request about one path into a codebase assessment or offer unrequested redesign recommendations.
 
-When the explanation depends on a version-sensitive tool or generated relationship, establish that dependency from project evidence, or from a narrow observation whose effects stay confined to disposable output, before presenting it as fact; an observation with any other effect needs authority of its own. If the available surface cannot settle part of the question, state the uncertainty and the specific evidence that would settle it rather than filling the gap from ecosystem habit, and name the inspected boundary wherever it limits the answer.
+When the explanation depends on a version-sensitive tool or generated relationship, establish that dependency from project evidence, or from a narrow observation whose effects stay confined to disposable output, before presenting it as fact; an observation with any other effect needs authority of its own.

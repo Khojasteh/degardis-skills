@@ -40,7 +40,7 @@ handoffs:
   - When the cause is established, the requester authorized repairing it, the repair changes only project documentation, and it is neither carried out nor pending on this route
 ---
 
-Diagnosis is the deliverable. Do not turn a likely fix into an edit, and do not treat a successful workaround as proof of cause.
+Do not treat a successful workaround as proof of cause.
 
 Define the reproduction first, as [[guide:failure-investigation]] describes it. Start from supplied failures and existing artifacts, then search for the symbols and boundaries they name. Read the implicated path before broadening the search. Run a focused reproduction only when it is safe and can distinguish competing explanations; the request for the cause authorizes one whose effects stay confined to disposable output, and any other effect needs authority of its own.
 

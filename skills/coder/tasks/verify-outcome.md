@@ -54,4 +54,4 @@ Identify the exact claim, criteria, project revision, configuration, and environ
 
 Then run the adopted check that can answer the claim. Classify a failure under [[principle:software-evidence]] before attributing it to the subject: an invalid harness, an unavailable dependency, or a failure that predates what the claim covers is reported as what it is, and only evidence that the claim itself is false yields a failing verdict.
 
-Give one verdict at the width the evidence supports. A pass names the claim and decisive evidence. A failure names the violated criterion and observed result. An unverified verdict names the unavailable or inconclusive evidence and the one check that would settle it. Include the reached and unreached surface where it limits the verdict.
+Give one verdict at the width the evidence supports. A pass names the claim and decisive evidence. A failure names the violated criterion and observed result. An unverified verdict names the unavailable or inconclusive evidence and the one check that would settle it.

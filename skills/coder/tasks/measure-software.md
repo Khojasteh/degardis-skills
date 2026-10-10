@@ -31,8 +31,8 @@ handoffs:
 
 This task may run the software where authorized but does not repair or alter it. Fixing the subject or editing its configuration to obtain a different result would report on software other than the software asked about.
 
-Identify what is to be run, its inputs and workload, the project revision, configuration, and environment before running, since a result describes only the conditions that produced it.
+Identify what is to be run, its inputs and workload, the project revision, configuration, and environment before running.
 
 Then run it. Classify a failure under [[principle:software-evidence]] before attributing it to the subject: an invalid harness, an unavailable dependency, or an environment fault is reported as what it is, and only a run whose harness, dependencies, and environment are sound shows the software's behavior.
 
-Report the result at the width the evidence supports, with the revision, configuration, environment, and workload that produced it. The result reports the software's behavior or cost, not whether that is acceptable, so do not invent a threshold to turn it into a verdict. A result that could not be obtained names the unavailable evidence and the one run that would obtain it. Include the reached and unreached surface where it limits the result.
+Report the result at the width the evidence supports, with the revision, configuration, environment, and workload that produced it. The result reports the software's behavior or cost, not whether that is acceptable, so do not invent a threshold to turn it into a verdict. A result that could not be obtained names the unavailable evidence and the one run that would obtain it.

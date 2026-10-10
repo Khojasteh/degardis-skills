@@ -45,9 +45,9 @@ guides:
 - work-slicing
 ---
 
-A design request asks which design should be built and why, for whoever decides on it, not for the work to be ordered or carried out, so the design document the request asks for is the only project material it may write.
+A design request asks which design should be built and why, for whoever decides on it, not for the work to be ordered or carried out.
 
-Establish the requested outcome, who decides on the design, the starting state that bears on it, and the facts still open. Read the applicable instructions before existing project or starter material, then inspect code, configuration, tests, history, platform constraints, and available tooling until every question that could change the choice of design is settled or stands open. Run a command only when its result could change that choice; the design request authorizes a run whose effects stay confined to disposable output, and any other effect needs authority of its own.
+Establish the requested outcome, who decides on the design, the starting state that bears on it, and the facts still open. Inspect code, configuration, tests, history, platform constraints, and available tooling until every question that could change the choice of design is settled or stands open. The design request authorizes running a command whose effects stay confined to disposable output, and any other effect needs authority of its own.
 
 Where the evidence separates one viable design from the rest, recommend it; where it does not, present each viable design with the fact or decision that would separate them and who supplies it, since a recommendation the evidence cannot carry reads to the decider as settled.
 

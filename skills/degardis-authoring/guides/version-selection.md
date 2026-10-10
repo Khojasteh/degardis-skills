@@ -4,7 +4,7 @@ applicability:
 - When the work depends on a skill's version
 ---
 
-For a new source, take the initial version from the requester, standing instructions, or a versioning convention one of them names. If none exists and the effective initializer supplied a value, it may remain as an explicit authoring default; that establishes only the literal value, not release semantics. If no acceptable default exists and a final version is required to close the requested artifact, ask the authority over the skill for the value or convention after completing independent work.
+For a new source, take the initial version from the requester, standing instructions, or a versioning convention one of them names. If none exists and the effective initializer supplied a value, it may remain as an explicit authoring default; that establishes only the literal value, not release semantics. If no acceptable default exists and a final version is required to close the requested artifact, ask the authority over the skill for the value or convention.
 
 A source edit does not create a versioning requirement, and general authority to revise bundle content does not authorize changing the version field. Preserve the exact existing version unless the requester, standing instructions, or an established packaging/release requirement makes version work part of the task.
 

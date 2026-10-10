@@ -32,7 +32,7 @@ An asset referenced as instructions is guidance the skill delivers, regardless o
 
 ## Functional verification
 
-Static screening does not prove a helper works. During creation or revision, every added or behaviorally changed script or functional asset that the outcome relies on needs an authorized, isolated representative check appropriate to its role: execute a script against a safe fixture, parse/render a template, or otherwise exercise the interface the child agent will use. Verify both the expected result and relevant failure behavior, without using real sensitive material as a convenient fixture.
+Static screening does not prove a helper works. During creation or revision, every added or behaviorally changed script or functional asset that the outcome relies on needs an authorized, isolated representative check appropriate to its role: execute a script against a safe fixture, parse/render a template, or otherwise exercise the interface the child agent will use. Verify both the expected result and relevant failure behavior.
 
 A read-only review or packaging task does not execute third-party code merely to inspect it. If runtime behavior matters and no authorized observation exists, return that behavior as unverified or hand the question to behavioral evaluation under its own contract.
 

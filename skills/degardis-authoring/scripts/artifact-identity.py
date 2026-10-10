@@ -31,8 +31,10 @@ output:
     {"identity": "degardis-artifact-v1:sha256:<hex>", "store": "folder" or "zip",
      "entries": <count>, "bytes": <total content bytes>}
   --entries adds "names": [{"name": <canonical name>, "size": <bytes>}, ...] in identity order.
-  On failure, standard output is {"identity": null, "reason": <code>, "detail": <text>}
+  When no identity is computed (exit 3 or 4), standard output is
+    {"identity": null, "reason": <code>, "detail": <text>}
   and standard error says what was wrong, what was expected, and what to try.
+  Invalid arguments (exit 2) are reported on standard error only.
 
 exit status:
   0  identity computed
@@ -114,9 +116,19 @@ class ZipEntry:
         self.size = info.file_size
 
     def read(self):
-        with self.archive.open(self.info) as stream:
-            while chunk := stream.read(CHUNK):
-                yield chunk
+        try:
+            with self.archive.open(self.info) as stream:
+                while chunk := stream.read(CHUNK):
+                    yield chunk
+        except (OSError, NotImplementedError):
+            raise
+        except Exception as error:
+            raise unreadable(
+                "damaged",
+                f"{self.info.orig_filename} cannot be decompressed: {error}",
+                "entries whose stored data decompresses to their recorded content",
+                "obtain an undamaged copy of the archive",
+            ) from None
 
 
 def changed(name):

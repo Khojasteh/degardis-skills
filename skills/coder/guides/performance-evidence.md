@@ -9,8 +9,6 @@ Define the metric, workload, scale, environment, configuration, sample method, n
 
 Name the statistic the outcome depends on, such as a tail percentile, sustained throughput, peak footprint, cold start, transferred size, or unit cost. Make the workload representative in input shape, scale, state, concurrency, and lifecycle, including the common case and any boundary or high-load case the outcome depends on, and state what production dimensions it misses. If a representative input is unavailable, label any synthesized or sampled workload as a proxy, state how it was derived and what would validate it, and do not claim a representative result from it. Do not measure against a default invented for an indispensable missing outcome, workload, environment, or guardrail.
 
-Use existing telemetry or measurements first, then obtain the narrowest missing observation needed for the requested result.
-
 Account for sampling bias, instrumentation overhead, missing spans, and aggregation that can hide a dominant tail. Suspect the instrument when the reported cost is implausible for the work. Report a defect, misconfiguration, saturated dependency, or contended environment as such rather than absorbing it into an optimization.
 
 Generating load, profiling a shared or live system, raising production diagnostics, or incurring spend requires separate bounded authority.

@@ -41,6 +41,6 @@ With pip, invoke it through the target environment's own interpreter, as `<inter
 - **A different compiler is authorized and established to accept the source:** select it explicitly as the new effective compiler, then re-establish help, manual, and format acceptance before source work.
 - **Migration is authorized and an authoritative contract establishes how to preserve the older source's meaning:** migration belongs to revision and must preserve behavior separately from compiler acceptance.
 
-If the compiler supplies no manual for the source format, obtain an authoritative format reference within the authorized read boundary or leave the format contract unresolved.
+If the compiler supplies no manual for the source format, obtain an authoritative format reference or leave the format contract unresolved.
 
-After any authorized prerequisite action, verify its result; for installation, record the version and invocation and compare the installed version with the intended release. A failed or unchanged prerequisite is reported once with the next evidence or authority needed.
+After an installation, record the version and invocation and compare the installed version with the intended release.

@@ -3,10 +3,12 @@ title: Plan Degardis source work
 cues:
 - the requester asks for a plan for Degardis source work
 - the requester asks for Degardis source work that host instructions prohibit
+- the requester asks for a new or changed Degardis source and does not authorize writing it
 goal: An implementable, staged plan for the declared change, with this task itself changing no source or artifact, and making every unsettled decision and unsupported premise visible.
 knowledge:
 - working-accounts
 - evidence-bounds
+- child-skill-and-agent
 - source-defects
 - skill-judgments
 - compiler-evidence

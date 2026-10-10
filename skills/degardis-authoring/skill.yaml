@@ -40,6 +40,8 @@ content:
   - knowledge/*.md
   guides:
   - guides/*.md
+  scripts:
+  - scripts/*.py
 interface:
   display_name: Degardis Authoring
   short_description: Author and build Degardis skills; describe or test any skill

@@ -6,6 +6,7 @@ goal: Build the exact supplied source into the requested bundle form, leaving th
 knowledge:
 - working-accounts
 - evidence-bounds
+- child-skill-and-agent
 - compiler-evidence
 - compiler-integrity
 guides:

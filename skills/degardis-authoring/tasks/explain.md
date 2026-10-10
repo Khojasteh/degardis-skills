@@ -7,6 +7,7 @@ cues:
 goal: Answer the Degardis authoring question at the requested depth from the effective compiler's format contract and the applicable authoring guidance, with anything those sources do not establish reported as unestablished rather than supplied from memory or neighboring practice.
 knowledge:
 - evidence-bounds
+- child-skill-and-agent
 - compiler-evidence
 guides:
 - effective-compiler

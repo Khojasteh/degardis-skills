@@ -7,6 +7,7 @@ goal: An account of the requested aspect of the supplied material, including pre
 knowledge:
 - working-accounts
 - evidence-bounds
+- child-skill-and-agent
 - compiler-evidence
 guides:
 - effective-compiler

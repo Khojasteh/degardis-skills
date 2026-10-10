@@ -15,7 +15,7 @@ Generating load, profiling a shared or live system, raising production diagnosti
 
 ## Attributing cost
 
-When a performance cost must be located rather than only measured, as it must be before any optimization, use a focused profile, trace, plan, counter, or benchmark that can attribute the dominant cost to one of the resource domains in [[guide:performance-cost-domains]]. Apply the following cost-localization steps to that attribution.
+Before any optimization, and whenever else [[guide:performance-cost-domains]] applies, use a focused profile, trace, plan, counter, or benchmark that can attribute the dominant cost to one of the resource domains in that guide. Apply the following cost-localization steps to that attribution.
 
 Locate the path or bounded set owning the largest material share of the resource named by the outcome, not the first code that looks expensive. When representative measurement is unavailable, keep the causal proxy, its claim limits, and the workload and environment needed to validate it; code shape or a familiar optimization target does not establish cost.
 

@@ -29,10 +29,10 @@ handoffs:
   - When the run shows a failure of the subject, the requester authorized fixing it, the fix changes only project documentation, and it is neither made nor pending on this route
 ---
 
-This task may run the software where authorized but does not repair or alter it. Fixing the subject or editing its configuration to obtain a different result would report on software other than the software asked about.
+This task may run the software but does not repair or alter it. Fixing the subject or editing its configuration to obtain a different result would report on software other than the software asked about.
 
 Identify what is to be run, its inputs and workload, the project revision, configuration, and environment before running.
 
-Then run it. Classify a failure under [[principle:software-evidence]] before attributing it to the subject: an invalid harness, an unavailable dependency, or an environment fault is reported as what it is, and only a run whose harness, dependencies, and environment are sound shows the software's behavior.
+Then run it; the request for the observation or measurement authorizes a run whose effects stay confined to disposable output, and any other effect needs authority of its own. Classify a failure under [[principle:software-evidence]] before attributing it to the subject: an invalid harness, an unavailable dependency, or an environment fault is reported as what it is, and only a run whose harness, dependencies, and environment are sound shows the software's behavior.
 
 Report the result at the width the evidence supports, with the revision, configuration, environment, and workload that produced it. The result reports the software's behavior or cost, not whether that is acceptable, so do not invent a threshold to turn it into a verdict. A result that could not be obtained names the unavailable evidence and the one run that would obtain it.

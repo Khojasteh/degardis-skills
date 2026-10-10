@@ -6,6 +6,7 @@ goal: Implement the authorized behavior in the effective compiler's accepted for
 knowledge:
 - working-accounts
 - evidence-bounds
+- child-skill-and-agent
 - source-defects
 - compiler-evidence
 - compiler-integrity

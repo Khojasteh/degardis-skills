@@ -7,6 +7,7 @@ goal: Return a behavior claim no broader than the supplied or freshly obtained e
 knowledge:
 - working-accounts
 - evidence-bounds
+- child-skill-and-agent
 - compiler-evidence
 - compiler-integrity
 - behavior-attribution

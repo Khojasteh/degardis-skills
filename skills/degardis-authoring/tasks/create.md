@@ -6,6 +6,7 @@ goal: A new source in the effective compiler's accepted format whose exact gener
 knowledge:
 - working-accounts
 - evidence-bounds
+- child-skill-and-agent
 - source-defects
 - skill-judgments
 - compiler-evidence

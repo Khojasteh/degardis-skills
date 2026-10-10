@@ -1,0 +1,29 @@
+[
+  {
+    "number": "INV-0001",
+    "customer": "C-001",
+    "issued_on": "2026-08-03",
+    "due_on": "2026-09-02",
+    "total": "1250.00",
+    "paid_on": "2026-08-28",
+    "overdue_since": null
+  },
+  {
+    "number": "INV-0002",
+    "customer": "C-002",
+    "issued_on": "2026-08-20",
+    "due_on": "2026-09-04",
+    "total": "480.00",
+    "paid_on": null,
+    "overdue_since": "2026-09-05"
+  },
+  {
+    "number": "INV-0003",
+    "customer": "C-003",
+    "issued_on": "2026-09-15",
+    "due_on": "2026-10-15",
+    "total": "2100.00",
+    "paid_on": null,
+    "overdue_since": null
+  }
+]

@@ -11,6 +11,7 @@ A fixture is deliberately not exemplary. Each contains work the run is meant to 
 | [`tiered-pricing`](#tiered-pricing) | Checkout pricing with volume discount tiers | Repairing a boundary defect the suite does not catch | Performance work, review of a supplied diff |
 | [`nightly-report`](#nightly-report) | A nightly activity report with a benchmark harness | Measuring and reducing cost when the measurement itself is skewed | Defect repair, production-scale measurement |
 | [`ledger-export`](#ledger-export) | Ledger exports in several formats | Delivering a fully specified but absent feature | Defect repair, performance work |
+| [`late-fees`](#late-fees) | Invoicing with an approved but unbuilt late-fee policy | Which of a plan's open choices to settle, ask, or carry | Defect repair, performance work, implementation |
 
 ## What the fixtures share
 
@@ -113,3 +114,38 @@ Ledger exports for an accounts team: an `Entry` record, a CSV and a JSON seriali
 - Performance work.
 - Review of a supplied diff.
 - Anything needing a build step, a service, or a database.
+
+## `late-fees`
+
+Invoicing for an accounts team: customer payment terms, invoice issue and due dates, payments, and a nightly run that marks unpaid invoices overdue, with the ledger in `data/invoices.json`. Four modules and fourteen `unittest` tests in two files, all passing. `docs/late-fees.md` describes late fees as approved by Finance and not built, and the ordinary request is to plan that work. The code has no planted defect; what the fixture carries is the choices that plan meets, in three kinds.
+
+### Choices the project already settles
+
+- *The fee.* `docs/late-fees.md` fixes the amount (2% of the invoice total or $15.00, whichever is greater), the rounding (to the cent, halves up), and that no invoice is charged a second fee.
+- *When the grace period starts.* The same page starts it on the day `docs/billing.md` makes an invoice overdue.
+- *How a charged fee is recorded.* The same page records it on its invoice in a `late_fee` field and leaves the invoice's `total` unchanged.
+- *Project conventions.* `CONTRIBUTING.md` fixes the test runner, `Decimal` money built from strings, and that the docs and any docstring repeating a promise change with the behaviour.
+
+A plan that asks the requester about any of these is asking for something already supplied.
+
+### A choice that only sets a value
+
+- *The grace period's length.* `docs/late-fees.md` says Finance will set it before launch, and nothing in the project gives a value. It is one value whoever charges the fee, so the rest of the plan holds whatever it turns out to be. It is Finance's policy, and no evidence favours any value. The page fixes the day the grace period starts but not how its days are counted from there, so which nightly run first charges belongs with the length rather than with what is settled.
+
+### A choice that forks the work
+
+- *Who charges the fee.* `docs/late-fees.md` says Finance has not decided between this package charging it in the nightly run and the payment processor charging it and reporting each fee in its daily settlement file. The two answers give different work. Charging here means assessing eligibility, the grace period, and the once-only rule in the nightly run. Charging at the processor means none of that here, only reading a settlement file whose format nothing in the project describes and recording its fees in the ledger. Both answers are known, so a plan can carry a branch for each, the processor's only as far as obtaining that format, and leave the choice to be answered before anyone builds past the work the branches share; what carrying it costs is a longer plan and a branch that will be dropped. It is Finance's decision, so no default for it is available to a run, and nothing in the project points either way.
+
+### Suited to
+
+- Planning under a normal request, with a choice of each kind in front of the run before the design is settled.
+- Planning under a request not to ask questions, where nothing defaultable covers the two requester-owned choices.
+- Telling a choice the project settles from one only the requester can make, and a choice that only sets a value from one that forks the work.
+
+### Not suited to
+
+- Defect repair: nothing here is wrong.
+- Performance work.
+- Implementation of late fees, which the choice of who charges them blocks.
+- Review of a supplied diff.
+- A choice no plan can be written for until it is answered: both requester-owned choices here can be carried in a plan.

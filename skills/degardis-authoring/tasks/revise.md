@@ -44,7 +44,7 @@ handoffs:
   - When a required runtime-only acceptance question has neither an unfinished evaluation responsible for it nor an evaluation outcome against the revision's exact final state on this route, and authority and host capability permit that evaluation
 ---
 
-Frame the change before editing: what the request authorizes, which behavior is meant to change, the independently derived obligations affected, and what already owns them. When only a built bundle or installed skill is supplied, there is no source to revise: report that part as unsupported without the source that produced it.
+Frame the change before editing: what the request authorizes, which behavior is meant to change, the obligations the change brings in or affects, and what already owns them. A request that widens the outcome asks for it delivered correctly and completely, so it covers adding what the widened outcome needs; an addition that would change how an existing outcome behaves waits for the requester to accept it. When only a built bundle or installed skill is supplied, there is no source to revise: report that part as unsupported without the source that produced it.
 
 Before the first edit, establish the preservation account and record every affected starting contribution with inspectable evidence. When it applies, read [[guide:whole-construct-rewrite]] before the change edits maintained source.
 

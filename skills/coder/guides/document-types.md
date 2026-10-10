@@ -27,9 +27,9 @@ x-claim-provenance:
 - claim: Explanation gives background, design reasons, alternatives, and connections within a bounded subject, without instruction or reference detail.
   source: https://diataxis.fr/explanation/
   scope: retrieved 2026-10-05
-- claim: Release notes serve users about to install or upgrade a release; each note gives the kind of change, flags user action required, names the affected interface or feature, and links documentation; test, build, and fixes for unreleased bugs get none.
-  source: https://github.com/kubernetes/community/blob/master/contributors/guide/release-notes.md
-  scope: retrieved 2026-10-05
+- claim: Kubernetes release notes serve users about to install or upgrade a release; each note gives the kind of change, flags user action required, names the affected interface or feature, and links documentation. Its policy requires no note for tests, build infrastructure changes, or fixes for unreleased bugs.
+  source: https://github.com/kubernetes/community/blob/main/contributors/guide/release-notes.md
+  scope: retrieved 2026-10-10
 - claim: A changelog is a curated, newest-first list of notable changes per version for humans, with ISO dates, an Unreleased section, changes grouped as Added, Changed, Deprecated, Removed, Fixed, and Security, yanked releases marked, and no commit-log dumps.
   source: https://keepachangelog.com/en/1.1.0/
   scope: version 1.1.0, retrieved 2026-10-05
@@ -76,7 +76,7 @@ Each type below serves one reader doing one kind of work, so a document that mix
 
 These three carry change over time, each for a reader at a different moment.
 
-- **Release notes:** for someone about to install or upgrade to one release. Put anything that requires their action first, then the user-visible changes grouped by kind, each naming the interface or feature it affects and linking its documentation, then known issues and limits. Leave out test and build changes and fixes for bugs no release shipped.
+- **Release notes:** for someone about to install or upgrade to one release. Put anything that requires their action first, then the user-visible changes grouped by kind, each naming the interface or feature it affects and linking its documentation, then known issues and limits. Leave out test and build changes that have no effect on installation, upgrade, supported use, or operation, and fixes for bugs no release shipped.
 - **Changelog:** for users and developers following a project across versions. Keep any changes not yet released in an Unreleased section on top, then one curated entry per released version, newest first, each with its version, an ISO 8601 date, and a link; group changes as added, changed, deprecated, removed, fixed, and security, and mark a withdrawn release as yanked. Summarize notable changes in the reader's terms; never paste commit messages.
 - **Migration or upgrade guide:** for someone moving existing work from one version or mechanism to another. State the versions it covers and who is affected, then for each breaking change the version that introduced it, the verified previous and new behavior, whether it breaks builds, binaries, or only behavior, the reason, the recommended action, and the affected interfaces. Give the steps in order, how to confirm the result, and how to back out where the change can be undone.
 

@@ -5,7 +5,7 @@ applicability:
 - When the quality of an existing test suite is in question
 ---
 
-For each test under question, identify the contract it can distinguish, what change should make it fail, and whether that change is forbidden. A passing test is not useful merely because it executes code, and an awkward test is not disposable merely because its value is hard to see.
+For each test under question, identify the contract it can distinguish, what change should make it fail, and whether that change is forbidden. A passing test is not useful merely because it executes code, and an awkward test is not removable merely because its value is hard to see.
 
 Establish those answers from the contract, product code and consumers, or version-control history rather than from the test alone. When an assertion supplies a literal being searched, exclude test material from the product-side search, where the assertion's own copy of the literal would match.
 

@@ -25,10 +25,6 @@ guides:
 - behavioral-preservation
 - names-and-headings
 - wording-and-references
-- guide-design
-- task-cues
-- handoff-conditions
-- facet-design
 - restructuring-on-evidence
 - version-selection
 - supplied-artifact
@@ -42,10 +38,13 @@ handoffs:
   - When the defect's evidence is completed interactions whose attribution to the source has neither an unfinished evaluation responsible for it nor an evaluation outcome on this route
   - When a repaired defect was established by evaluation and its exact final state has neither an unfinished evaluation responsible for re-evaluating it nor a re-evaluation outcome on this route
   - When a required runtime-only acceptance question has neither an unfinished evaluation responsible for it nor an evaluation outcome against the revision's exact final state on this route, and authority and host capability permit that evaluation
+- task: plan
+  applicability:
+  - When host instructions prohibit changing the source and no unfinished plan or planning outcome on this route covers the change
 ---
 
 Frame the change before editing: what the request authorizes, which behavior is meant to change, the obligations the change brings in or affects, and what already owns them. A request that widens the outcome asks for it delivered correctly and completely, so it covers adding what the widened outcome needs; an addition that would change how an existing outcome behaves waits for the requester to accept it. When only a built bundle or installed skill is supplied, there is no source to revise: report that part as unsupported without the source that produced it.
 
-Before the first edit, establish the preservation account and record every affected starting contribution with inspectable evidence. When it applies, read [[guide:whole-construct-rewrite]] before the change edits maintained source.
+Before the first edit, establish the [[guide:behavioral-preservation]] account and record every affected starting contribution with inspectable evidence. When it applies, read [[guide:whole-construct-rewrite]] before the change edits maintained source.
 
 After the last edit, read every changed generated page end to end as a cold reader who never saw the old text: the changed lines show the edit, not the page, and a sentence that read correctly beside its predecessor can read as its opposite alone, or make sense only beside it. Begin final validation only once every surface is closed on that state as [[guide:path-rehearsal]] requires, every affected member has a terminal disposition, and every required case passes.

@@ -1,3 +1,4 @@
+from contextlib import nullcontext
 import json
 import os
 from pathlib import Path
@@ -12,7 +13,7 @@ from unittest.mock import patch
 import zipfile
 
 
-SCRIPT = Path(__file__).resolve().parents[1] / "artifact-identity.py"
+SCRIPT = Path(__file__).resolve().with_name("artifact-identity.py")
 HELPER = runpy.run_path(str(SCRIPT))
 PREFIX = "degardis-artifact-v1:sha256:"
 EMPTY = PREFIX + "fce5cc5edc51073e08d48fa124c65fca6164ccd394ad98f0b6ba0a64f03b0354"
@@ -79,6 +80,15 @@ class IdentityTests(unittest.TestCase):
                 info.create_system = creator
                 info.external_attr = (stat.S_IFREG | 0o644) << 16
                 archive.writestr(info, content, compress_type=compression)
+        return path
+
+    def rewrite_header_field(self, path, local_offset, central_offset, change):
+        data = bytearray(path.read_bytes())
+        for signature, offset in ((b"PK\x03\x04", local_offset), (b"PK\x01\x02", central_offset)):
+            start = data.index(signature) + offset
+            value = int.from_bytes(data[start:start + 2], "little")
+            data[start:start + 2] = change(value).to_bytes(2, "little")
+        path.write_bytes(bytes(data))
         return path
 
     def directory_link(self, link, target):
@@ -195,6 +205,43 @@ class IdentityTests(unittest.TestCase):
         plain = self.base / "plain"
         plain.write_bytes(b"not a zip")
         self.failure(plain, 4, "not-an-archive")
+
+    def test_damaged_encrypted_and_unsupported_archives_are_read_failures(self):
+        damaged = self.archive([("x", b"alpha")], name="damaged.zip")
+        data = damaged.read_bytes()
+        self.assertEqual(data.count(b"alpha"), 1)
+        damaged.write_bytes(data.replace(b"alpha", b"alphb"))
+        self.failure(damaged, 4, "damaged")
+        encrypted = self.archive([("x", b"alpha")], name="encrypted.zip")
+        self.rewrite_header_field(encrypted, 6, 8, lambda flags: flags | 0x1)
+        self.failure(encrypted, 4, "encrypted")
+        unsupported = self.archive([("x", b"alpha")], name="unsupported.zip")
+        self.rewrite_header_field(unsupported, 8, 10, lambda method: 9)
+        self.failure(unsupported, 4, "unreadable")
+
+    def test_special_and_unlistable_folder_entries_have_no_identity(self):
+        special = SimpleNamespace(
+            name="pipe", path=str(self.base / "pipe"),
+            stat=lambda follow_symlinks: SimpleNamespace(st_mode=stat.S_IFIFO, st_reparse_tag=0),
+            is_dir=lambda follow_symlinks: False, is_file=lambda follow_symlinks: False)
+        for listing, expected in ((dict(return_value=nullcontext([special])), (3, "not-content")),
+                                  (dict(side_effect=PermissionError(13, "Permission denied")),
+                                   (4, "unreadable"))):
+            with self.subTest(expected=expected[1]):
+                with patch("os.scandir", **listing):
+                    with self.assertRaises(HELPER["Failure"]) as caught:
+                        HELPER["walk_folder"](str(self.base))
+                self.assertEqual((caught.exception.status, caught.exception.reason), expected)
+
+    def test_root_resolving_outside_the_artifact_is_unavailable(self):
+        folder = self.folder([("top/x", b"x")])
+        outside = str(self.base / "elsewhere")
+        realpath = os.path.realpath
+        with patch("os.path.realpath",
+                   side_effect=lambda path: outside if path.endswith("top") else realpath(path)):
+            with self.assertRaises(HELPER["Failure"]) as caught:
+                HELPER["folder_root"](str(folder), "top")
+        self.assertEqual((caught.exception.status, caught.exception.reason), (3, "root-outside"))
 
     def test_duplicate_normalized_names_are_not_discarded(self):
         archive = self.archive([("caf\u00e9", b"one"), ("cafe\u0301", b"two")])

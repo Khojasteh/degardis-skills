@@ -46,7 +46,7 @@ guides:
 handoffs:
 - task: withdraw-software
   applicability:
-  - When the change requires retiring an existing capability beyond removing what the change made stale, the requester authorized that withdrawal, and it is neither carried out nor pending on this route
+  - When the change requires retiring an existing capability beyond removing what the change made stale, the requester authorized that withdrawal, and it is not yet carried out
 ---
 
 This task owns a requested change to an existing software project, whether or not its finished state changes behavior. Diagnosis, design, implementation, verification, test maintenance, documentation, migration, and reconciliation are stages only when they serve that outcome.

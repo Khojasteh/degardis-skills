@@ -42,10 +42,10 @@ guides:
 handoffs:
 - task: implement-change
   applicability:
-  - When the requester authorized carrying out what the assessment recommends, and an established action within that authority changes anything beyond project documentation and is neither carried out nor pending on this route
+  - When the requester authorized carrying out what the assessment recommends, and an established action within that authority changes anything beyond project documentation and is not yet carried out
 - task: document-software
   applicability:
-  - When the requester authorized carrying out what the assessment recommends, and an established action within that authority changes only project documentation and is neither carried out nor pending on this route
+  - When the requester authorized carrying out what the assessment recommends, and an established action within that authority changes only project documentation and is not yet carried out
 ---
 
 **Scope and depth.** Before analysis, establish the named surface, its current revision or working tree, the reader who will act on the result, whether the concern is broad or named, and the reading depth. The present codebase is the subject; do not invent a base revision. A narrowed assessment stays within its named concern except where evidence establishes a prerequisite of that concern or a limit on it. Fix the depth before reading units: if it covers the whole mapped surface, inspect every unit in it; otherwise partition the surface and sample from evidence of risk rather than convenience.

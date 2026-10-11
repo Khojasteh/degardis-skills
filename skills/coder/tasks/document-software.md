@@ -25,7 +25,7 @@ guides:
 handoffs:
 - task: implement-change
   applicability:
-  - When the documentation cannot be made true without changing executable software, the requester authorized that change, and it is neither made nor pending on this route
+  - When the documentation cannot be made true without changing executable software, the requester authorized that change, and it is not yet made
 ---
 
 This task's writable surface is the documentation prose, source comments, docstrings, examples, and documentation configuration the request authorizes. Text the running software displays or emits, such as interface copy, messages, and command-line help, lies outside it even when only its wording changes: tests, translations, and consumers that parse it depend on that text, so changing it is a software change verified as one.

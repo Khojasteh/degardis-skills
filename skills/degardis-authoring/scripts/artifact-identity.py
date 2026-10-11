@@ -8,9 +8,9 @@
 import argparse
 import hashlib
 import json
+import ntpath
 import os
 import stat
-import struct
 import sys
 import unicodedata
 import zipfile
@@ -143,14 +143,53 @@ def changed(name):
 MOUNT_POINT_TAG = getattr(stat, "IO_REPARSE_TAG_MOUNT_POINT", 0xA0000003)
 
 
+def is_link_status(status):
+    return (stat.S_ISLNK(status.st_mode)
+            or getattr(status, "st_reparse_tag", 0) == MOUNT_POINT_TAG)
+
+
 def is_link(entry):
-    if entry.is_symlink():
-        return True
+    return is_link_status(entry.stat(follow_symlinks=False))
+
+
+def folder_root(path, root):
+    top = os.path.abspath(path)
+    base = top
+    for component in [None] + (root.split("/") if root else []):
+        if component is not None:
+            base = os.path.join(base, component)
+        try:
+            status = os.stat(base, follow_symlinks=False)
+        except (FileNotFoundError, NotADirectoryError):
+            status = None
+        if status is not None and is_link_status(status):
+            raise unavailable(
+                "link-entry",
+                f"{base} is a link to content held elsewhere",
+                "an artifact root and directory ancestry without links",
+                "report the identity as unavailable, or use an authorized copy without links",
+            )
+        if status is None or not stat.S_ISDIR(status.st_mode):
+            raise unreadable(
+                "root-not-found",
+                f"{root} is not a directory inside {path}",
+                "a --root naming a directory inside the folder",
+                "check the path given to --root",
+            )
+    resolved_top = os.path.normcase(os.path.realpath(top))
+    resolved_base = os.path.normcase(os.path.realpath(base))
     try:
-        status = entry.stat(follow_symlinks=False)
-    except OSError:
-        return False
-    return getattr(status, "st_reparse_tag", 0) == MOUNT_POINT_TAG
+        contained = os.path.commonpath([resolved_top, resolved_base]) == resolved_top
+    except ValueError:
+        contained = False
+    if not contained:
+        raise unavailable(
+            "root-outside",
+            f"{root} resolves outside {path}",
+            "a --root contained inside the artifact",
+            "report the identity as unavailable; do not follow an external root",
+        )
+    return base
 
 
 def walk_folder(root):
@@ -246,7 +285,7 @@ def zip_entries(archive, root):
     return found
 
 
-def compute(entries, list_names):
+def canonical_entries(entries):
     named = []
     for entry in entries:
         text, encoded = canonical_name(entry.components)
@@ -260,20 +299,31 @@ def compute(entries, list_names):
                 "one entry per canonical name",
                 "report the identity as unavailable; do not discard or choose between the entries",
             )
+    return named
+
+
+def encode_length(length, name):
+    if not 0 <= length <= MAX_LENGTH:
+        raise unavailable(
+            "length",
+            f"{name} has a length that does not fit in eight bytes",
+            "names and contents shorter than 2**64 bytes",
+            "report the identity as unavailable",
+        )
+    return length.to_bytes(8, byteorder="big", signed=False)
+
+
+def compute(entries, list_names):
+    named = canonical_entries(entries)
     digest = hashlib.sha256(DOMAIN)
     total = 0
     names = []
     for text, encoded, entry in named:
-        if len(encoded) > MAX_LENGTH or entry.size > MAX_LENGTH:
-            raise unavailable(
-                "length",
-                f"{text} has a length that does not fit in eight bytes",
-                "names and contents shorter than 2**64 bytes",
-                "report the identity as unavailable",
-            )
-        digest.update(struct.pack(">Q", len(encoded)))
+        name_length = encode_length(len(encoded), text)
+        content_length = encode_length(entry.size, text)
+        digest.update(name_length)
         digest.update(encoded)
-        digest.update(struct.pack(">Q", entry.size))
+        digest.update(content_length)
         count = 0
         for chunk in entry.read():
             count += len(chunk)
@@ -289,42 +339,41 @@ def compute(entries, list_names):
     return result
 
 
+def identify_folder(path, root, list_names):
+    base = folder_root(path, root)
+    entries = walk_folder(base)
+    before = folder_marks(entries)
+    result = compute(entries, list_names)
+    if folder_marks(walk_folder(base)) != before:
+        raise changed(path)
+    result["store"] = "folder"
+    return result
+
+
+def identify_zip(path, root, list_names):
+    mark = os.stat(path)
+    try:
+        with zipfile.ZipFile(path) as archive:
+            result = compute(zip_entries(archive, root), list_names)
+    except zipfile.BadZipFile as error:
+        raise unreadable(
+            "not-an-archive",
+            f"{path} is not a readable ZIP archive: {error}",
+            "a folder or a ZIP archive",
+            "pass the artifact's folder, or a ZIP archive of it",
+        ) from None
+    after = os.stat(path)
+    if (after.st_size, after.st_mtime_ns) != (mark.st_size, mark.st_mtime_ns):
+        raise changed(path)
+    result["store"] = "zip"
+    return result
+
+
 def identify(path, root, list_names):
     if os.path.isdir(path):
-        base = path
-        if root:
-            base = os.path.join(path, *root.split("/"))
-            if not os.path.isdir(base) or os.path.islink(base):
-                raise unreadable(
-                    "root-not-found",
-                    f"{root} is not a directory inside {path}",
-                    "a --root naming a directory inside the folder",
-                    "check the path given to --root",
-                )
-        entries = walk_folder(base)
-        before = folder_marks(entries)
-        result = compute(entries, list_names)
-        if folder_marks(walk_folder(base)) != before:
-            raise changed(path)
-        result["store"] = "folder"
-        return result
+        return identify_folder(path, root, list_names)
     if os.path.isfile(path):
-        mark = os.stat(path)
-        try:
-            with zipfile.ZipFile(path) as archive:
-                result = compute(zip_entries(archive, root), list_names)
-        except zipfile.BadZipFile as error:
-            raise unreadable(
-                "not-an-archive",
-                f"{path} is not a readable ZIP archive: {error}",
-                "a folder or a ZIP archive",
-                "pass the artifact's folder, or a ZIP archive of it",
-            ) from None
-        after = os.stat(path)
-        if (after.st_size, after.st_mtime_ns) != (mark.st_size, mark.st_mtime_ns):
-            raise changed(path)
-        result["store"] = "zip"
-        return result
+        return identify_zip(path, root, list_names)
     raise unreadable(
         "not-found",
         f"{path} does not exist or is neither a folder nor a file",
@@ -349,7 +398,8 @@ def parse(argv):
     parser.add_argument(
         "--root",
         metavar="DIR",
-        help="treat this directory inside the artifact, with '/' separators, as its top level "
+        help="treat this relative directory inside the artifact, with '/' separators "
+        "and no links in its ancestry, as its top level "
         "(default: the folder itself or the archive's root)",
     )
     parser.add_argument(
@@ -360,14 +410,24 @@ def parse(argv):
     return parser.parse_args(argv)
 
 
+def relative_root(value):
+    supplied_root = value or ""
+    root = supplied_root.rstrip("/")
+    if (supplied_root.startswith("/") or "\\" in supplied_root
+            or (root and any(part in ("", ".", "..") or ntpath.splitdrive(part)[0]
+                             for part in root.split("/")))):
+        return None
+    return root
+
+
 def main(argv=None):
     for stream in (sys.stdout, sys.stderr):
-        stream.reconfigure(errors="backslashreplace")
+        stream.reconfigure(encoding="utf-8", errors="backslashreplace", newline="\n")
     arguments = parse(argv)
-    root = (arguments.root or "").strip("/")
-    if root and any(part in ("", ".", "..") for part in root.split("/")):
-        print(f"artifact-identity.py: --root {arguments.root!r} must name a directory by its components, "
-              "without empty, '.' or '..' parts", file=sys.stderr)
+    root = relative_root(arguments.root)
+    if root is None:
+        print(f"artifact-identity.py: --root {arguments.root!r} must name a relative directory "
+              "with '/' separators, without drive names or empty, '.' or '..' parts", file=sys.stderr)
         return EXIT_USAGE
     try:
         result = identify(arguments.path, root, arguments.entries)

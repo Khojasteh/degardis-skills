@@ -34,6 +34,14 @@ An asset referenced as instructions is guidance the skill delivers, regardless o
 
 Static screening does not prove a helper works. During creation or revision, every added or behaviorally changed script or functional asset that the outcome relies on needs an authorized, isolated representative check appropriate to its role: execute a script against a safe fixture, parse/render a template, or otherwise exercise the interface the child agent will use. Verify both the expected result and relevant failure behavior.
 
-A read-only review or packaging task does not execute third-party code merely to inspect it. If runtime behavior matters and no authorized observation exists, return that behavior as unverified or hand the question to behavioral evaluation under its own contract.
+A review or packaging task does not execute code from outside the supplied source merely to inspect it. If runtime behavior matters and no authorized observation exists, return that behavior as unverified or hand the question to behavioral evaluation under its own contract.
 
 Authoring also establishes that the child agent can tell when and how to run, open, or follow each shipped file from the final bundle.
+
+## Script tests
+
+A script is shipped because a wrong result is costly, so the source keeps tests that pin its contract: the result for representative inputs, and each kind of failure with its exit status. The child agent never runs them, so they stay in the source, outside the content the manifest selects; in the bundle they would be code no reader reaches.
+
+When creation or revision adds a script, or changes the behavior of one that has no tests, write tests for the contract the change relies on as part of the change. Where tests exist, they record the contract as it stands. Run them before the first edit, so a failure the change did not cause is recorded as a starting fact rather than charged to the change or quietly fixed. Update each test that pins behavior the change deliberately alters, and give every changed behavior a case that fails against the starting script and passes against the changed one: a case that passes against both does not test the change. On the final state every test passes, except a starting failure the change did not cause, which is reported.
+
+A review reads a script's tests with the script: they show which parts of its contract the source pins, and a promised behavior without a case is unverified however plausible the code reads. Running the tests or the script executes the requester's code, an effect a review request does not grant by itself, so a review runs them only with that permission from the requester or standing instructions, confined so that nothing outside temporary locations changes, including caches a runtime writes beside the code. Without that permission, the behavior they would settle stays unverified.

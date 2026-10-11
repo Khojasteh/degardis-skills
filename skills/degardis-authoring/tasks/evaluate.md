@@ -16,6 +16,9 @@ guides:
 - fresh-evaluator-protocol
 - supplied-artifact
 handoffs:
+- task: review
+  applicability:
+  - When the question needs no observed behavior, only a judgment of supplied Degardis source as written, and has neither an unfinished review responsible for it nor a review outcome on this route
 - task: revise
   applicability:
   - When the evidence establishes a defect in supplied Degardis source, the requester asked to fix it, changing the source is authorized and permitted by the host, and no unfinished revision or revision outcome on this route covers the defect
@@ -28,7 +31,7 @@ For a supplied Degardis source, the evaluated artifact is the bundle the effecti
 
 Before choosing evidence, name the question. Whether a request routes, whether the child agent can recover what it needs from the bundle, whether a changed instruction moves behavior, whether an end-to-end case succeeds, and whether the guidance holds at a stated capability floor are different questions needing different evidence.
 
-Then take the least demanding class that can settle it, and the fewest instances of that class. One observation closes a question whose answer is visible in a single return; replication is for a question whose answer varies from one evaluator to the next, and every instance beyond the first is spend earned by that variance rather than by wanting a firmer number. Interactions the requester already supplied are cheapest, because the behavior has already happened; judge them in their own context and do not rerun a case merely to produce tidier evidence. A contradiction, a missing branch, an unreachable instruction, or an incompatible limit is settled by reading. A fresh instance is for the case where the unknown genuinely depends on what a fresh evaluator does.
+Then take the least demanding class that can settle it, and the fewest instances of that class. One observation closes a question whose answer is visible in a single return; replication is for a question whose answer varies from one evaluator to the next, and every instance beyond the first is spend earned by that variance rather than by wanting a firmer number. Interactions the requester already supplied are cheapest, because the behavior has already happened; judge them in their own context and do not rerun a case merely to produce tidier evidence. A question that reading settles, such as a contradiction, a missing branch, an unreachable instruction, or an incompatible limit, needs no run: its answer is what the skill prescribes, not what an agent did. A fresh instance is for the case where the unknown genuinely depends on what a fresh evaluator does.
 
 Classify an unsuccessful observation before attributing it. A guidance failure is one where the child agent had to supply something the guidance owed it — a routing decision, discriminator, authority, fallback, or completion test. Evaluator capability, host behavior, tool availability, permission, fixture quality, and infrastructure are different causes with different repairs.
 

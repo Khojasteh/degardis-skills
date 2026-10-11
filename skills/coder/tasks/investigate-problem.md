@@ -34,10 +34,10 @@ guides:
 handoffs:
 - task: implement-change
   applicability:
-  - When the cause is established, the requester authorized repairing it, the repair changes anything beyond project documentation, and it is neither carried out nor pending on this route
+  - When the cause is established, the requester authorized repairing it, the repair changes anything beyond project documentation, and it is not yet carried out
 - task: document-software
   applicability:
-  - When the cause is established, the requester authorized repairing it, the repair changes only project documentation, and it is neither carried out nor pending on this route
+  - When the cause is established, the requester authorized repairing it, the repair changes only project documentation, and it is not yet carried out
 ---
 
 Do not treat a successful workaround as proof of cause.

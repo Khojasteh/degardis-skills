@@ -39,13 +39,13 @@ guides:
 handoffs:
 - task: investigate-problem
   applicability:
-  - When the verdict is a failure, the requester asked why it fails, and its cause is neither established nor pending on this route
+  - When the verdict is a failure, the requester asked why it fails, and its cause is not yet established
 - task: implement-change
   applicability:
-  - When the verdict is a failure of the subject, the requester authorized fixing it, the fix changes anything beyond project documentation, and it is neither made nor pending on this route
+  - When the verdict is a failure of the subject, the requester authorized fixing it, the fix changes anything beyond project documentation, and it is not yet made
 - task: document-software
   applicability:
-  - When the verdict is a failure of the subject, the requester authorized fixing it, the fix changes only project documentation, and it is neither made nor pending on this route
+  - When the verdict is a failure of the subject, the requester authorized fixing it, the fix changes only project documentation, and it is not yet made
 ---
 
 This task may run checks but does not repair their failures. Fixing the subject, weakening an expectation, regenerating an accepted baseline, or editing configuration to obtain a pass would replace the thing being verified.

@@ -81,6 +81,17 @@ class IdentityTests(unittest.TestCase):
                 archive.writestr(info, content, compress_type=compression)
         return path
 
+    def directory_link(self, link, target):
+        if os.name == "nt":
+            result = subprocess.run(["cmd", "/c", "mklink", "/J", str(link), str(target)],
+                                    capture_output=True, check=False)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.addCleanup(os.rmdir, link)
+        else:
+            link.symlink_to(target, target_is_directory=True)
+            self.addCleanup(link.unlink)
+        return link
+
     def test_empty_content_has_fixed_identity(self):
         folder = self.folder([])
         (folder / "empty").mkdir()
@@ -217,18 +228,15 @@ class IdentityTests(unittest.TestCase):
     def test_windows_junction_or_posix_symlink_ancestry_is_rejected(self):
         folder = self.folder([])
         outside = self.folder([("sub/file", b"outside")], "outside")
-        link = folder / "alias"
-        if os.name == "nt":
-            result = subprocess.run(["cmd", "/c", "mklink", "/J", str(link), str(outside)],
-                                    capture_output=True, check=False)
-            self.assertEqual(result.returncode, 0, result.stderr)
-            self.addCleanup(os.rmdir, link)
-        else:
-            link.symlink_to(outside, target_is_directory=True)
-            self.addCleanup(link.unlink)
+        self.directory_link(folder / "alias", outside)
         self.failure(folder, 3, "link-entry", "--root", "alias/sub")
         self.failure(folder, 3, "link-entry")
-        self.failure(link, 3, "link-entry")
+
+    def test_linked_artifact_path_has_its_target_identity(self):
+        target = self.folder([("top/nested/" + name, content) for name, content in CONTENTS])
+        link = self.directory_link(self.base / "linked", target)
+        self.assertEqual(self.success(link)["identity"], self.success(target)["identity"])
+        self.assertEqual(self.success(link, "--root", "top/nested")["identity"], UNICODE)
 
     def test_zip_symlinks_are_rejected(self):
         path = self.base / "link.zip"

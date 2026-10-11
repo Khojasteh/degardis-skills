@@ -155,9 +155,8 @@ def is_link(entry):
 def folder_root(path, root):
     top = os.path.abspath(path)
     base = top
-    for component in [None] + (root.split("/") if root else []):
-        if component is not None:
-            base = os.path.join(base, component)
+    for component in root.split("/") if root else []:
+        base = os.path.join(base, component)
         try:
             status = os.stat(base, follow_symlinks=False)
         except (FileNotFoundError, NotADirectoryError):
@@ -166,7 +165,7 @@ def folder_root(path, root):
             raise unavailable(
                 "link-entry",
                 f"{base} is a link to content held elsewhere",
-                "an artifact root and directory ancestry without links",
+                "a --root whose directories below the artifact are not links",
                 "report the identity as unavailable, or use an authorized copy without links",
             )
         if status is None or not stat.S_ISDIR(status.st_mode):
@@ -399,7 +398,7 @@ def parse(argv):
         "--root",
         metavar="DIR",
         help="treat this relative directory inside the artifact, with '/' separators "
-        "and no links in its ancestry, as its top level "
+        "and no links among its directories, as its top level "
         "(default: the folder itself or the archive's root)",
     )
     parser.add_argument(

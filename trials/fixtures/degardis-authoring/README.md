@@ -81,3 +81,52 @@ The skill's own Markdown is hard-wrapped, while the canonical principle files ke
 - Packaging, scripts, or assets, since it ships none.
 - Format migration.
 - How the `release-notes` skill itself behaves, since there is no change list or draft to run it on.
+
+## `meeting-minutes`
+
+A skill for writing and reviewing meeting minutes from a supplied transcript or notes: two tasks (`draft` and `review`) that hand off to each other, three knowledge units, and sixteen skill-level principles, all canonical and carried unchanged. It has no facets, guides, scripts, or assets.
+
+It validates under `--fail-on-warning` with no errors or warnings. Its planted defects are all coverage gaps: things its outcome needs that no construct provides, which only a coverage judgment reaching past what the description and tasks say will find.
+
+### Planted defects
+
+- *A promised outcome no task delivers.* The description promises to "turn the meeting's decisions into an action-item list for the attendees", and the interface's short description repeats it, but no task produces action items, and the minutes structure has no place for an owner or a due date.
+- *A task the description does not offer.* `review` assesses existing minutes, which the description never mentions.
+- *A part of the minutes nothing asks for.* `knowledge/minutes-structure.md` gives Summary, Discussion, and Decisions, with no date, time, or attendance, so the minutes do not say which meeting they record or who took part.
+- *A partial source with no branch.* Neither task decides what happens when the transcript or notes are incomplete or a passage cannot be made out. `draft` works only from the source and traces every decision to a passage, but nothing says whether an unclear passage is left out, marked as unclear, or put to the requester.
+
+### Other defects
+
+These were not built in as the fixture's subject, but they are real, and a review that reports them is right:
+
+- *An unreachable branch.* `draft`'s first cue matches only when the requester supplies a transcript or notes, while its body asks for the source when none was supplied, so a request for minutes without a source may route to no task.
+- *A missing-source branch that contradicts its goal.* `review` says that without a source it can judge only the minutes' form, but its goal ties every problem to a source passage, and nothing says whether a form-only review is delivered or the review stops.
+- *Fixing against the structure.* `draft` says a fix changes only the parts its problems concern, while step 2 writes the minutes in the minutes structure; for minutes that depart from the structure, nothing scopes the steps to fresh drafts.
+- *An undecidable length rule.* The minutes structure's "short enough to read in a few minutes" is read by `review` too, where it gives no threshold to judge against.
+
+### Sound material
+
+Everything else is meant to survive a correct revision:
+
+- the source-material and decisions-and-discussion concepts
+- the three sections of the minutes structure and their order
+- the draft task's rule that a fix changes only the parts its problems concern, and its check that every decision traces to the source
+- the review task's problem classes
+- the hand-offs between `draft` and `review`
+- the sixteen canonical principles
+
+### Other conditions
+
+The skill's own Markdown is hard-wrapped, while the canonical principle files keep the canonical sources' one line per paragraph.
+
+### Suited to
+
+- A whole-source review whose coverage judgment has to reach past the description and the tasks.
+- A revision that widens the skill's outcome, such as a recap for people who missed the meeting, where the wider outcome needs material the existing tasks also carry.
+
+### Not suited to
+
+- Ownership, contradiction, or redundancy defects, since it plants none.
+- Compiler-integrity or validation-repair questions, since it has no findings.
+- Facets, guides, packaging, scripts, assets, or format migration, since it has none of them.
+- How the `meeting-minutes` skill itself behaves, since there is no transcript to run it on.

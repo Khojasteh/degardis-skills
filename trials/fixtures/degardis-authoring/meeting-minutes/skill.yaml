@@ -1,0 +1,35 @@
+name: meeting-minutes
+format_version: 2
+version: 1.0.0
+description: Write meeting minutes from a supplied transcript or notes, and turn the meeting's decisions into an action-item list for the attendees.
+principles:
+- authority-before-effect
+- claim-status
+- completion-evidence
+- complete-enumeration
+- proportionate-effort
+- source-authority
+- self-standing-artifacts
+- instruction-authority
+- reader-first-reporting
+- decision-relevant-questions
+- decision-provenance
+- bounded-delegation
+- coordinating-delegated-work
+- resumable-stopping
+- durable-state
+- sensitive-material
+tasks:
+- draft
+- review
+content:
+  tasks:
+  - tasks/*.md
+  knowledge:
+  - knowledge/*.md
+  principles:
+  - principles/*.md
+interface:
+  display_name: Meeting Minutes
+  short_description: Write meeting minutes and action items
+  default_prompt: Use meeting-minutes to write minutes from this meeting transcript.

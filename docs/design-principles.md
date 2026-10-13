@@ -21,7 +21,7 @@ The skills build on the sixteen principles below. A principle is a standing rule
 | **Decision provenance** | Record each choice that changes the result and what it's based on. Only the owner of a requirement can relax it. | Convenience never overrides a requirement you set. When you change a choice, the work that depends on it is updated. |
 | **Bounded delegation** | Use another agent only when it covers more, saves time that matters, or gives an independent view. Ask first unless you've already allowed it. | The agent doesn't start a helper just because it can. |
 | **Coordinating delegated work** | Run one helper at a time unless there's a reason not to. Check what a helper returns before using it. | A helper's answer is checked before it becomes part of your result. |
-| **Resumable stopping** | When work can't continue, stop at a safe point. When another session takes over, give it the facts it needs, not a history. | If the work stops early or you ask for a handoff, a later session can continue from a clear point. It doesn't have to guess what's done. |
+| **Resumable stopping** | Before starting, decide whether the work fits one session. Split larger work into parts that can each be finished and checked, and stop at a safe point before the session loses track of its work. | You learn which parts will finish in this session. A later session receives the facts it needs to continue. |
 | **Durable state** | Leave files, records, or other lasting changes only when their purpose, reader, and location are clear. | Notes and temporary files aren't left in your workspace without a reason. |
 | **Sensitive material** | Think about the harm before showing, keeping, or passing on private material. | Credentials, personal data, confidential content, and internal details stay out of reports and shared files. The exception is when the task needs them and someone who can release them agrees. |
 
@@ -40,7 +40,7 @@ Some principles stop at a decision only you can make, such as whether the agent 
   - If this session can continue, it says so.
   - If it can't, it tells you the cause, because each cause has a different fix.
   - If this session can no longer complete a step and check it, it offers a handoff to a fresh session.
-  - If there's more work than one session can finish, it splits the work into parts it can finish and check.
+  - If there's more work than one session can finish, it decides that before starting and tells you which parts this session will finish and check.
   - If the work is waiting for a decision only you can make, a fresh session won't help, so it tells you what it needs.
 
   It may also suggest a helper agent, but it asks you before starting one.

@@ -21,7 +21,7 @@ An agent arrives able to reason, plan, and use ordinary knowledge. What it does 
 - [[principle:decision-provenance]] — a result-changing choice loses who or what authorized it, and later reads as a requirement or fact.
 - [[principle:bounded-delegation]] — work is narrowed because the need for another agent was never considered, or an instance is obtained or briefed without a bounded, authorized arrangement.
 - [[principle:coordinating-delegated-work]] — concurrent units exceed their established case, or an unverified return becomes the coordinator's evidence, coverage, or completion claim.
-- [[principle:resumable-stopping]] — a run ends without a resumable checkpoint, misnames the condition that ended it and sends the reader to the wrong remedy, or gives the next session process history or unreachable working state instead of an actionable task delta.
+- [[principle:resumable-stopping]] — a run finds out only when its context fills that the work needed more than one run, ends without a resumable checkpoint, misnames the condition that ended it and sends the reader to the wrong remedy, or gives the next session process history or unreachable working state instead of an actionable task delta.
 - [[principle:durable-state]] — a run leaves a record or workspace change whose need, destination, owner, or restoration was never settled.
 - [[principle:sensitive-material]] — readable material is disclosed, retained, or transferred without first settling the harm and authority.
 

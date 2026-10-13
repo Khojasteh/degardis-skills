@@ -1,7 +1,7 @@
 ---
 title: Using an example
 applicability:
-- When the work turns on how a construct illustrates its rule with particular cases
+- When the work depends on how a construct illustrates its rule with particular cases
 ---
 
 One worked case — the input, the decision, and why — does more than another paragraph of description, and it is worth its bytes exactly where prose hides a discriminator. Label an example as an example, and never let an invented one become the only source of a behavior.

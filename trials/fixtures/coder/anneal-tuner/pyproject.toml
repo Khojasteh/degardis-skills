@@ -1,0 +1,13 @@
+[project]
+name = "tuner"
+version = "0.6.0"
+description = "Parameter search for tuning service configuration"
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["tuner*"]

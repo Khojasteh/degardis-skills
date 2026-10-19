@@ -1,0 +1,8 @@
+{
+  "pool=12,timeout_ms=100": 0.4525,
+  "pool=16,timeout_ms=50": 0.4725,
+  "pool=24,timeout_ms=200": 0.49625,
+  "pool=4,timeout_ms=200": 0.82125,
+  "pool=4,timeout_ms=50": 0.855,
+  "pool=8,timeout_ms=50": 0.54
+}

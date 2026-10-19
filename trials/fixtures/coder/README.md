@@ -13,6 +13,7 @@ A fixture is deliberately not exemplary. Each contains work the run is meant to 
 | [`ledger-export`](#ledger-export) | Ledger exports in several formats | Delivering a fully specified but absent feature | Defect repair, performance work |
 | [`late-fees`](#late-fees) | Invoicing with an approved but unbuilt late-fee policy | Which of a plan's open choices to settle, ask, or carry | Defect repair, performance work, implementation |
 | [`grid-tuner`](#grid-tuner) | Exhaustive parameter search scored by a 0–1 loss | Reconciling what rests on assumptions a change retires, when the old tests keep passing | Defect repair, performance work, review of a supplied diff |
+| [`anneal-tuner`](#anneal-tuner) | Grid search and simulated annealing scored by a 0–1 loss, with cached measurements | The same, when nothing names the assumption where it is used | Defect repair, performance work, review of a supplied diff |
 
 ## What the fixtures share
 
@@ -180,6 +181,43 @@ The fixture is built for a change delivered as several successive requests, each
 - A change delivered over successive requests, where each request retires an assumption that earlier work, the tests, and the documentation rest on.
 - Whether a run finds what rests on a retired assumption while the existing suite keeps passing, and whether it reviews the combined change before reporting each request complete.
 - Telling stale test objectives and fixtures apart from tests that still express a surviving contract, such as the tie rule and repeated-point handling.
+
+### Not suited to
+
+- Defect repair: the code is correct for its stated contract.
+- Performance work.
+- Review of a supplied diff.
+- A run that has to find an assumption nothing names: every planted site here names its assumption, as a constant called `WORST_LOSS`, a clamp, a percentage, or prose about a 0–1 loss. `anneal-tuner` hides the same assumptions where nothing names them.
+
+## `anneal-tuner`
+
+A library for tuning service configuration with two searches: `grid_search`, which scores every combination, and `anneal`, simulated annealing with restarts for spaces too large for that. A `ScoreCache` keeps measurements in a JSON file between tuning sessions, and `tuner.report` gives a one-line summary, a leaderboard, and a histogram. Four modules, an example in `examples/` with a committed cache of earlier measurements, and seventeen `unittest` tests in three files, all passing. `docs/scoring.md` fixes the contract: every objective returns a loss in [0, 1], 0 is perfect, lower is better, and a search stops early on reaching a fixed `target` whose default, 0, means perfect.
+
+It is built for the same three successive requests as `grid-tuner`: scores in the problem's own units, maximizing as well as minimizing, and a goal the objective defines instead of a target passed to the search. Only the contract page, the README, and the example's own normalization state the 0–1 scale in words. Everywhere else the assumption is carried by a number, an expression, or stored data, so a search for the words that name it finds none of the sites below, and the suite keeps passing with each of them in place.
+
+### Material resting on the 0–1 scale
+
+- *An annealing schedule.* `START_TEMPERATURE = 0.05` sets how readily `anneal` accepts a worse neighbour, through `exp(-increase / temperature)`, and is sized for increases of a few hundredths. In milliseconds or dollars the walk becomes greedy and relies on its restarts alone.
+- *A progress threshold.* `MIN_PROGRESS = 0.002` is an absolute difference. `anneal` records a new best only when it improves by more than that, so on an objective whose scores differ by less, such as a probability around 0.001, it never records the true best and restarts on a schedule that has nothing to do with progress.
+- *A histogram.* `report.histogram` places a score in bin `min(int(score * bins), bins - 1)` and labels the bins 0.0 to 1.0, so scores in other units all land in the first or last bin.
+- *Stored data.* `examples/pool-scores.json` holds six earlier measurements as 0–1 losses with no record of their unit. Once the example's objective returns milliseconds, those cached entries are compared with fresh ones in milliseconds, and a cached point wins at a fraction of its true latency. Running the example also writes fresh entries into that file.
+- *The example and the default target.* `examples/tune_pool.py` divides its latency by an assumed worst case, and both searches default to `target=0.0`, a perfect result only on the 0–1 scale.
+
+### Material resting on lower being better
+
+- `anneal`'s acceptance rule, both searches' best-point comparisons and their starting value of infinity, and the early stop all assume a lower score is better.
+- `report.leaderboard` sorts ascending and documents itself as best first.
+- Every test objective is a loss.
+
+### Material resting on a fixed target
+
+- The `target` parameter of both searches, its default, the `[target reached]` report marker, and the tests and documentation describing them.
+
+### Suited to
+
+- A change delivered over successive requests, where each request retires an assumption that earlier work, the tests, the documentation, and stored data rest on, and nothing names that assumption where it is used.
+- Whether a run judges tuning constants, arithmetic, and persisted data against a changed contract, rather than only the code and prose that mention it.
+- Whether a run notices that running the example changes committed data.
 
 ### Not suited to
 

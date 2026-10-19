@@ -12,6 +12,7 @@ A fixture is deliberately not exemplary. Each contains work the run is meant to 
 | [`nightly-report`](#nightly-report) | A nightly activity report with a benchmark harness | Measuring and reducing cost when the measurement itself is skewed | Defect repair, production-scale measurement |
 | [`ledger-export`](#ledger-export) | Ledger exports in several formats | Delivering a fully specified but absent feature | Defect repair, performance work |
 | [`late-fees`](#late-fees) | Invoicing with an approved but unbuilt late-fee policy | Which of a plan's open choices to settle, ask, or carry | Defect repair, performance work, implementation |
+| [`grid-tuner`](#grid-tuner) | Exhaustive parameter search scored by a 0–1 loss | Reconciling what rests on assumptions a change retires, when the old tests keep passing | Defect repair, performance work, review of a supplied diff |
 
 ## What the fixtures share
 
@@ -149,3 +150,39 @@ A plan that asks the requester about any of these is asking for something alread
 - Implementation of late fees, which the choice of who charges them blocks.
 - Review of a supplied diff.
 - A choice no plan can be written for until it is answered: both requester-owned choices here can be carried in a plan.
+
+## `grid-tuner`
+
+A small library for tuning service configuration: a `Space` of candidate values per setting, an objective that scores one combination, `grid_search` over every combination, a `CachedObjective` wrapper that shares evaluations between searches, and a one-line report. Five modules, an example in `examples/`, and seventeen `unittest` tests in three files, all passing. `docs/scoring.md` fixes the contract: every objective returns a loss in [0, 1], 0 is perfect, lower is better, and the search stops early on reaching a fixed `target` whose default, 0, means perfect.
+
+The fixture is built for a change delivered as several successive requests, each retiring one of those assumptions: scores in the problem's own units instead of a 0–1 loss, maximizing as well as minimizing, and a goal the objective defines instead of a target passed to the search. Its code is correct for the contract it states; what it carries is material resting on that contract that a reference search for the changed code does not reach.
+
+### Material resting on the 0–1 scale
+
+- *The visible site.* `search._score` clamps every loss onto [0, 1], and `test_a_loss_rounded_past_the_scale_is_clamped` pins that clamp, so removing it breaks one test.
+- *A sentinel.* `grid_search` starts its best score at `WORST_LOSS = 1.0`, so once scores can exceed 1 no point ever replaces it. Every test objective stays inside [0, 1], so the suite passes with the sentinel in place.
+- *Shared cached state.* `CachedObjective.lowest` starts at 1.0, the same sentinel in a second place, and is tested only with losses inside the scale.
+- *A tolerance and a default sized for the scale.* `tol=1e-3` is an absolute difference chosen for losses between 0 and 1, and the default `target=0.0` means a perfect result only on that scale.
+- *A report.* `report.format_result` prints the loss as a percentage, and its message for no result names "the worst possible loss". Its tests pin both wordings with losses inside the scale.
+- *Prose and an example.* `normalize` exists to map a raw cost onto the scale, and `README.md`, `docs/scoring.md`, the `Objective` docstring, and `examples/tune_pool.py`, which normalizes milliseconds by an assumed worst latency, all prescribe it.
+
+### Material resting on lower being better
+
+- `grid_search`'s replacement and early-stop comparisons, `Result.improvement`, `CachedObjective.lowest`, and the sentinel all assume a lower score is better. The tie rule, that the first of two tied points is kept, holds in either direction.
+- Every test objective is a loss, so none exercises the other direction.
+
+### Material resting on a fixed target
+
+- The `target` parameter, its default, the `[target reached]` report marker, and the tests and documentation describing them.
+
+### Suited to
+
+- A change delivered over successive requests, where each request retires an assumption that earlier work, the tests, and the documentation rest on.
+- Whether a run finds what rests on a retired assumption while the existing suite keeps passing, and whether it reviews the combined change before reporting each request complete.
+- Telling stale test objectives and fixtures apart from tests that still express a surviving contract, such as the tie rule and repeated-point handling.
+
+### Not suited to
+
+- Defect repair: the code is correct for its stated contract.
+- Performance work.
+- Review of a supplied diff.

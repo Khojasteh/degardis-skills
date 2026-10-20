@@ -6,8 +6,8 @@ Give your AI coding agent a clearer way to work. These reusable skills are writt
 
 | Skill | Version | Category | Download | What it helps with |
 | --- | --- | --- | --- | --- |
-| [Degardis Authoring](skills/degardis-authoring/) | `2.3.0` | Authoring | [degardis-authoring.zip](../../releases/latest/download/degardis-authoring.zip) | Guides an agent to author, review, plan, and package Degardis skills, explain their design, and describe or test any skill with evidence suited to each question. |
-| [Coder](skills/coder/) | `1.3.0` | Software development | [coder.zip](../../releases/latest/download/coder.zip) | Guides an agent through investigation, design, planning, implementation, review, documentation, verification, and measurement, with code that follows your project's style and ownership boundaries. |
+| [Degardis Authoring](skills/degardis-authoring/) | `2.4.0` | Authoring | [degardis-authoring.zip](../../releases/latest/download/degardis-authoring.zip) | Guides an agent to author, review, plan, and package Degardis skills, explain their design, and describe or test any skill with evidence suited to each question. |
+| [Coder](skills/coder/) | `1.4.0` | Software development | [coder.zip](../../releases/latest/download/coder.zip) | Guides an agent through investigation, design, planning, implementation, review, documentation, verification, and measurement, with code that follows your project's style and changes followed through everything built on them. |
 
 Open a skill's name to see where it fits, where its limits are, and what a useful request looks like.
 

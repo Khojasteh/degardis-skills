@@ -1,0 +1,6 @@
+[
+  {"loan_id": "L0001", "member_id": "M-001", "isbn": "978-0-00-000001-1", "borrowed_on": "2026-09-01", "due_on": "2026-09-15", "returned_on": "2026-09-12"},
+  {"loan_id": "L0002", "member_id": "M-002", "isbn": "978-0-00-000002-8", "borrowed_on": "2026-09-20", "due_on": "2026-10-04", "returned_on": null},
+  {"loan_id": "L0003", "member_id": "M-001", "isbn": "978-0-00-000003-5", "borrowed_on": "2026-10-10", "due_on": "2026-10-24", "returned_on": null},
+  {"loan_id": "L0004", "member_id": "M-003", "isbn": "978-0-00-000004-2", "borrowed_on": "2026-10-30", "due_on": "2026-11-13", "returned_on": null}
+]

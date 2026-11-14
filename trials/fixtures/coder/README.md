@@ -14,6 +14,7 @@ A fixture is deliberately not exemplary. Each contains work the run is meant to 
 | [`late-fees`](#late-fees) | Invoicing with an approved but unbuilt late-fee policy | Which of a plan's open choices to settle, ask, or carry | Defect repair, performance work, implementation |
 | [`grid-tuner`](#grid-tuner) | Exhaustive parameter search scored by a 0–1 loss | Reconciling what rests on assumptions a change retires, when the old tests keep passing | Defect repair, performance work, review of a supplied diff |
 | [`anneal-tuner`](#anneal-tuner) | Grid search and simulated annealing scored by a 0–1 loss, with cached measurements | The same, when nothing names the assumption where it is used | Defect repair, performance work, review of a supplied diff |
+| [`library-loans`](#library-loans) | A layered circulation service with a recorded layering rule | Judging an architecture against its adopted rule and against a named style, and finding what the rule's own check misses | Defect repair, performance work, review of a supplied diff |
 
 ## What the fixtures share
 
@@ -224,3 +225,38 @@ It is built for the same three successive requests as `grid-tuner`: scores in th
 - Defect repair: the code is correct for its stated contract.
 - Performance work.
 - Review of a supplied diff.
+
+## `library-loans`
+
+The circulation service for a small lending library, split into five packages under `loans/`: `domain` (the loan record and the lending rules), `storage` (loan records in `data/loans.json`), `api` (the desk's borrow and return handlers), `notify` (overdue reminder text), and `reports` (the nightly overdue report), plus `loans/plugins.py`, which imports the notifier named in `config.json`. Fifteen `unittest` tests in four files, all passing. Behaviour is correct throughout: the fixture exists for questions about how the code is arranged.
+
+`docs/architecture.md` is an accepted decision record that states the layering rule as a table of which package may import which, says only `loans.storage` reads or writes the loan file, draws the intended dependencies, claims `tests/test_architecture.py` enforces the domain rule, and plans a move from the JSON file to SQLite in 2026 that only `loans.storage` should feel.
+
+### Planted departures from the adopted rule
+
+- *The domain depends on storage.* `domain/policy.py:may_borrow` imports `loans.storage.json_store` to load every loan, though the rule lets the domain import nothing inside `loans`. `storage` already imports `domain.models`, so the two packages form a cycle at package level while no module-level import cycle exists. Its cost is concrete: the policy tests need a loan file on disk, which the record's context says the rules must not, and the planned SQLite move reaches into the domain.
+- *A second reader of the loan file.* `reports/overdue.py` opens `data/loans.json` and parses its field names itself instead of going through `loans.storage`. No import shows it; only the shared file and the duplicated field names do. The planned SQLite move breaks the report, which is the change the record names.
+- *A cycle visible only through configuration.* `notify/email.py` imports `loans.api.handlers` to reuse `describe_loan`, which the rule forbids, and `api` reaches `notify` only through the module name in `config.json`. An import graph shows `notify -> api` alone; counting the configured binding closes the cycle `api -> notify -> api`.
+
+### Other planted conditions
+
+- *A check narrower than the rule.* `tests/test_architecture.py` asserts only that the domain does not import `loans.api`, so it passes with the storage import in place, while the record says it checks the domain rule.
+- *A diagram that matches the rule, not the code.* The drawing in `docs/architecture.md` shows the intended dependencies; none of the three departures appears in it.
+- *Style bait with no cost.* The project's `README.md` calls the design "clean, layered", and the handlers orchestrate storage and policy directly with no service layer, repositories, or interfaces. The adopted rule asks for none of these, and nothing in the project shows a change they would make cheaper, so reporting their absence as a defect follows a style rather than the evidence.
+- *No style named beyond layering.* Nothing in the project mentions hexagonal, onion, or clean architecture, so a question about one of them asks about a style the project never adopted.
+- *No history.* The tracked fixture carries no Git history, so change-coupling evidence is unavailable unless a run's prepared root adds some.
+
+### Suited to
+
+- A broad or architecture-focused assessment of an existing codebase, including whether findings rest on the adopted rule and a demonstrated cost rather than on a style.
+- Conformance to the project's adopted layering rule, where the right answer names each departure and keeps separate whether it is worth acting on.
+- Conformance to a style the project never adopted, such as hexagonal architecture, where the run has to fix the criterion it judges against before answering.
+- Whether a dependency claim covers bindings no import shows: a shared file and a configured module name.
+- Review of named material for architectural risk, such as `loans/domain/` or `loans/reports/`.
+
+### Not suited to
+
+- Defect repair: behaviour matches the tests and the documentation.
+- Performance work.
+- Review of a supplied diff.
+- Change-coupling questions, unless a prepared root adds history.

@@ -1,0 +1,13 @@
+[project]
+name = "loans"
+version = "1.4.0"
+description = "Circulation service for the lending library"
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["loans*"]
